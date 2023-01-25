@@ -39,9 +39,10 @@ func calendar() *fyne.Container /* *xwidget.Calendar */ {
 }
 
 var str = "No Date"
+
 var data = binding.BindString(&str)
 var dateLabel = widget.NewLabelWithData(data)
-var entryDate=widget.NewEntryWithData(data)
+var entryDate = widget.NewEntryWithData(data)
 
 func CalendarBtn(win fyne.Window) *fyne.Container {
 	c := container.NewVBox(
@@ -51,14 +52,14 @@ func CalendarBtn(win fyne.Window) *fyne.Container {
 				"OK",
 				"Cancel",
 				calendar(), func(b bool) {
-					data.Set(d.dateChosen.Text)
+					dateBind.Set(d.dateChosen.Text)
 				},
 				win,
 			).Show()
 		}),
-		dateLabel,
-		entryDate,
-		widget.NewLabel("Label"),
+		//dateLabel,
+		//entryDate,
+		//widget.NewLabel("Label"),
 	)
 	return c
 }
