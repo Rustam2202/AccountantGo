@@ -14,8 +14,7 @@ func main() {
 	w := a.NewWindow("Accounter Manager")
 	w.Resize(fyne.NewSize(600, 600))
 
-	//	c:=gui.CalendarBtn(w)
-	//cc:=gui.Calendar()
+	var record acc.Record
 
 	w.SetContent(
 		container.NewVBox(
@@ -25,6 +24,5 @@ func main() {
 	)
 
 	w.ShowAndRun()
-	acc.Calc()
 	//gui.Dummy()
 }
