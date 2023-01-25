@@ -20,11 +20,10 @@ func main() {
 	w.SetContent(
 		container.NewVBox(
 			gui.Operation(w),
-			//widget.NewLabel(""),
-			//gui.CalendarBtn(w),
-			//&cc,
+			gui.PeriodDates(w),
 		),
 	)
+
 	w.ShowAndRun()
 	acc.Calc()
 	//gui.Dummy()
