@@ -1,17 +1,16 @@
 package gui
 
 import (
-//	acc "accounter/app"
+	// db "accounter/db"
+	"accounter/db"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/widget"
 )
 
-var dateIncomeBind = binding.BindString(nil)
-var dateSpendBind = binding.BindString(nil)
-
-func Operation(win fyne.Window) *fyne.Container {
+func AddOperation(dataBase *db.Database, win fyne.Window) *fyne.Container {
 	enterOperLabel := widget.NewLabel("Enter operation:")
 	enterOperLabel.Alignment = fyne.TextAlignCenter
 
@@ -21,6 +20,9 @@ func Operation(win fyne.Window) *fyne.Container {
 	sumLabel := widget.NewLabel("Sum")
 	dateLabel := widget.NewLabel("Date")
 
+	dateIncomeBind := binding.BindString(nil)
+	dateSpendBind := binding.BindString(nil)
+
 	incomeEntry := widget.NewEntry()
 	spendEntry := widget.NewEntry()
 	dateIncomEntry := widget.NewEntryWithData(dateIncomeBind)
@@ -29,10 +31,10 @@ func Operation(win fyne.Window) *fyne.Container {
 	dateSpendEntry.SetPlaceHolder("01/01/2001")
 
 	addBtn := widget.NewButton("Add", func() {
-		//acc.AddIncome(incomeEntry.Text, dateIncomEntry.Text)
+		dataBase.AddIncome(incomeEntry.Text, dateIncomEntry.Text)
 	})
 	subBtn := widget.NewButton("Sub", func() {
-		//acc.AddSpend(spendEntry.Text, dateSpendEntry.Text)
+		dataBase.AddSpend(spendEntry.Text, dateSpendEntry.Text)
 	})
 
 	calendarBtn1 := CalendarBtn(dateIncomeBind, win)

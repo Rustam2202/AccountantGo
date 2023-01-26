@@ -44,6 +44,10 @@ func (db *Database) CreateDataBase() {
 	statement.Exec()
 }
 
+func (db *Database) GetDataBase() *Database {
+	return db
+}
+
 func (db *Database) AddIncome(income string, date string) {
 	query := fmt.Sprintf(`INSERT INTO %s (date, income) VALUES ('%s', '%s')`,
 		"tutelka", date, income)
@@ -65,7 +69,7 @@ func (db *Database) AddSpend(spend string, date string) {
 }
 
 func (db *Database) ShowRecords(date_from string, date_to string) {
-	query := fmt.Sprintf(`SELECT * FROM %s WHERE date > %s AND date < %s`,
+	query := fmt.Sprintf(`SELECT * FROM %s WHERE date > '%s' AND date < '%s'`,
 		"tutelka", date_from, date_to)
 	rows, err := db.dataBase.Query(query)
 	if err != nil {
