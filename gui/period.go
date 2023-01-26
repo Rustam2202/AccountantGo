@@ -36,7 +36,8 @@ func PeriodDates(dataBase *db.Database, win fyne.Window) *fyne.Container {
 	//	yearEntry := widget.NewSelectEntry([]string{"2020", "2021", "2022", "2023"})
 
 	confirmBtn := widget.NewButton("Show", func() {
-		dataBase.ShowRecords(dateFromEntry.Text, dateToEntry.Text)
+		PrintRow()
+		//dataBase.ShowRecords(dateFromEntry.Text, dateToEntry.Text)
 	})
 
 	labelCont := container.NewHBox(label)
@@ -47,6 +48,19 @@ func PeriodDates(dataBase *db.Database, win fyne.Window) *fyne.Container {
 	//entryCont.Resize(fyne.NewSize( 500,500))
 	btnCont := container.NewVBox(fromBtn, toBtn)
 
+	table := widget.NewTable(
+		func() (int, int) {
+			return 5, 5
+		},
+		func() fyne.CanvasObject {
+			return widget.NewLabel("")
+		},
+		func(tci widget.TableCellID, co fyne.CanvasObject) {
+			co.(*widget.Label).SetText("text")
+		},
+	)
+	table.MinSize()
+
 	c := container.NewVBox(
 		labelCont,
 		container.NewHBox(
@@ -55,6 +69,7 @@ func PeriodDates(dataBase *db.Database, win fyne.Window) *fyne.Container {
 			btnCont,
 		),
 		confirmBtn,
+		table,
 	)
 	return c
 }

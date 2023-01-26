@@ -3,6 +3,7 @@ package gui
 import (
 	// db "accounter/db"
 	"accounter/db"
+	"strconv"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -31,10 +32,12 @@ func AddOperation(dataBase *db.Database, win fyne.Window) *fyne.Container {
 	dateSpendEntry.SetPlaceHolder("01/01/2001")
 
 	addBtn := widget.NewButton("Add", func() {
-		dataBase.AddIncome(incomeEntry.Text, dateIncomEntry.Text)
+		inc, _ := strconv.ParseFloat(incomeEntry.Text, 32)
+		dataBase.AddIncome(float32(inc), dateIncomEntry.Text)
 	})
 	subBtn := widget.NewButton("Sub", func() {
-		dataBase.AddSpend(spendEntry.Text, dateSpendEntry.Text)
+		spn, _ := strconv.ParseFloat(spendEntry.Text, 32)
+		dataBase.AddSpend(float32(spn), dateSpendEntry.Text)
 	})
 
 	calendarBtn1 := CalendarBtn(dateIncomeBind, win)
