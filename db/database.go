@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"time"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/go-sql-driver/mysql"
+	//	_ "github.com/mattn/go-sqlite3"
 )
 
 type Database struct {
 	name     string
 	dataBase *sql.DB
-	err      error
 }
 
 type Record struct {
@@ -26,24 +26,63 @@ type Records struct {
 	Records []Record
 }
 
+const TableName = "accounter"
+
 func (db *Database) CreateDataBase(name string) {
-	db.name = name
-	db.dataBase, db.err = sql.Open("sqlite3", db.name+".db")
-	if db.err != nil {
-		panic(db.err)
+	var err error
+	db.dataBase, err = sql.Open("mysql", "root:password@tcp(127.0.0.1:3306)/")
+	if err != nil {
+		panic(err)
 	}
-	query := fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s (
-		id INTEGER PRIMARY KEY,
-		date TEXT,
-		income TEXT,
-		spend REAL,
-		comment TEXT)`,
-		db.name)
-	statement, errr := db.dataBase.Prepare(query)
-	if db.err != nil {
-		panic(errr)
+	defer db.dataBase.Close()
+
+	_, err = db.dataBase.Exec("CREATE DATABASE IF NOT EXISTS " + name)
+	if err != nil {
+		fmt.Println(err)
+		panic(err)
 	}
-	statement.Exec()
+
+	_, err = db.dataBase.Exec("USE " + name)
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = db.dataBase.Exec(
+		fmt.Sprintf(
+			`CREATE TABLE IF NOT EXISTS %s ( 
+				id INT,
+				income FLOAT,
+				spend FLOAT,
+				date DATETIME,
+				comment TEXT
+		)`, TableName))
+	if err != nil {
+		panic(err)
+	}
+
+	//mysqlType := fmt.Sprintf(`CREATE DATABASE %s`, db.name)
+
+	/*
+		db.name = name
+		db.dataBase, db.err = sql.Open("sqlite3", db.name+".db")
+		if db.err != nil {
+			panic(db.err)
+		}
+
+
+		sqliteType := fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s (
+			id INTEGER PRIMARY KEY,
+			date TEXT,
+			income TEXT,
+			spend REAL,
+			comment TEXT)`,
+			db.name)
+		statement, errr := db.dataBase.Prepare(sqliteType)
+		if db.err != nil {
+			panic(errr)
+		}
+		statement.Exec()
+	*/
 }
 
 func (db *Database) GetDataBase() *Database {
@@ -51,8 +90,8 @@ func (db *Database) GetDataBase() *Database {
 }
 
 func (db *Database) AddIncome(income string, date string) {
-	query := fmt.Sprintf(`INSERT INTO %s (date, income) VALUES ('%s', '%s')`,
-		db.name, date, income)
+	query := fmt.Sprintf(`INSERT INTO %s (income, date) VALUES (%f, '%s')`,
+		TableName, income, date)
 	statement, err := db.dataBase.Prepare(query)
 	if err != nil {
 		panic(err)
@@ -61,8 +100,8 @@ func (db *Database) AddIncome(income string, date string) {
 }
 
 func (db *Database) AddSpend(spend string, date string) {
-	query := fmt.Sprintf(`INSERT INTO %s (date, spend) VALUES ('%s', '%s')`,
-		db.name, date, spend)
+	query := fmt.Sprintf(`INSERT INTO %s (spend, date) VALUES ('%s', '%s')`,
+		TableName, spend, date)
 	statement, err := db.dataBase.Prepare(query)
 	if err != nil {
 		panic(err)
@@ -72,7 +111,7 @@ func (db *Database) AddSpend(spend string, date string) {
 
 func (db *Database) ShowRecords(date_from string, date_to string) {
 	query := fmt.Sprintf(`SELECT * FROM %s `,
-		db.name,
+		TableName,
 	// date_from, date_to,
 	)
 	rows, err := db.dataBase.Query(query)
