@@ -9,6 +9,7 @@ import (
 )
 
 type Database struct {
+	name     string
 	dataBase *sql.DB
 	err      error
 }
@@ -25,8 +26,9 @@ type Records struct {
 	Records []Record
 }
 
-func (db *Database) CreateDataBase() {
-	db.dataBase, db.err = sql.Open("sqlite3", "./tutelka.db")
+func (db *Database) CreateDataBase(name string) {
+	db.name = name
+	db.dataBase, db.err = sql.Open("sqlite3", db.name+".db")
 	if db.err != nil {
 		panic(db.err)
 	}
@@ -36,7 +38,7 @@ func (db *Database) CreateDataBase() {
 		income TEXT,
 		spend REAL,
 		comment TEXT)`,
-		"tutelka")
+		db.name)
 	statement, errr := db.dataBase.Prepare(query)
 	if db.err != nil {
 		panic(errr)
@@ -50,7 +52,7 @@ func (db *Database) GetDataBase() *Database {
 
 func (db *Database) AddIncome(income string, date string) {
 	query := fmt.Sprintf(`INSERT INTO %s (date, income) VALUES ('%s', '%s')`,
-		"tutelka", date, income)
+		db.name, date, income)
 	statement, err := db.dataBase.Prepare(query)
 	if err != nil {
 		panic(err)
@@ -60,7 +62,7 @@ func (db *Database) AddIncome(income string, date string) {
 
 func (db *Database) AddSpend(spend string, date string) {
 	query := fmt.Sprintf(`INSERT INTO %s (date, spend) VALUES ('%s', '%s')`,
-		"tutelka", date, spend)
+		db.name, date, spend)
 	statement, err := db.dataBase.Prepare(query)
 	if err != nil {
 		panic(err)
@@ -69,13 +71,25 @@ func (db *Database) AddSpend(spend string, date string) {
 }
 
 func (db *Database) ShowRecords(date_from string, date_to string) {
-	query := fmt.Sprintf(`SELECT * FROM %s WHERE date > '%s' AND date < '%s'`,
-		"tutelka", date_from, date_to)
+	query := fmt.Sprintf(`SELECT * FROM %s `,
+		db.name,
+	// date_from, date_to,
+	)
 	rows, err := db.dataBase.Query(query)
 	if err != nil {
 		panic(err)
 	}
 	for rows.Next() {
-		rows.Scan()
+		var id int
+		var date *string
+		var income *string
+		var spend *string
+		var comment *string
+		err := rows.Scan(&id, &date, &income, &spend, &comment)
+		if err != nil {
+			fmt.Println(err)
+			//continue
+		}
+		fmt.Println(id, *date, income, spend)
 	}
 }

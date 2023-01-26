@@ -1,7 +1,7 @@
 package main
 
 import (
-	"accounter/db"
+	db "accounter/db"
 	gui "accounter/gui"
 
 	"fyne.io/fyne/v2"
@@ -12,7 +12,7 @@ import (
 var DataBase db.Database
 
 func main() {
-	DataBase.CreateDataBase()
+	DataBase.CreateDataBase("tutelka")
 
 	a := app.New()
 	w := a.NewWindow("Accounter Manager")
