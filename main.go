@@ -1,7 +1,8 @@
 package main
 
 import (
-	acc "accounter/app"
+	//acc "accounter/app"
+	"accounter/db"
 	gui "accounter/gui"
 
 	"fyne.io/fyne/v2"
@@ -10,11 +11,12 @@ import (
 )
 
 func main() {
+	db.CreateDataBase()
 	a := app.New()
 	w := a.NewWindow("Accounter Manager")
 	w.Resize(fyne.NewSize(600, 600))
 
-	var record acc.Record
+	//var record acc.Record
 
 	w.SetContent(
 		container.NewVBox(

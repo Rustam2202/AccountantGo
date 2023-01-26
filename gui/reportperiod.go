@@ -12,8 +12,8 @@ func PeriodDates(win fyne.Window) *fyne.Container {
 	label := widget.NewLabel("Enter period or month for report")
 	fromLabel := widget.NewLabel("From")
 	toLabel := widget.NewLabel("To")
-	fromBtn := CalendarBtn(win)
-	toBtn := CalendarBtn(win)
+	//fromBtn := CalendarBtn(win)
+	//toBtn := CalendarBtn(win)
 	fromEntry := widget.NewEntry()
 	toEntry := widget.NewEntry()
 	monthLabel := widget.NewLabel("Month:")
@@ -26,8 +26,12 @@ func PeriodDates(win fyne.Window) *fyne.Container {
 	c := container.NewVBox(
 		label,
 		container.NewGridWithColumns(4,
-			fromLabel, fromEntry, fromBtn, empty,
-			toLabel, toEntry, toBtn, empty,
+			fromLabel, fromEntry, 
+			//fromBtn, 
+			empty,
+			toLabel, toEntry, 
+			//toBtn, 
+			empty,
 			monthLabel, monthEntry, yearLabel, yearEntry,
 		),
 	)

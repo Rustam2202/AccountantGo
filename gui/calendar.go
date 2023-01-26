@@ -38,13 +38,14 @@ func calendar() *fyne.Container /* *xwidget.Calendar */ {
 	return container.NewVBox(i, l, cal)
 }
 
+/*
 var str = "No Date"
-
 var data = binding.BindString(&str)
 var dateLabel = widget.NewLabelWithData(data)
 var entryDate = widget.NewEntryWithData(data)
+*/
 
-func CalendarBtn(win fyne.Window) *fyne.Container {
+func CalendarBtn(date binding.String, win fyne.Window) *fyne.Container {
 	c := container.NewVBox(
 		widget.NewButtonWithIcon("", theme.GridIcon(), func() {
 			dialog.NewCustomConfirm(
@@ -52,7 +53,7 @@ func CalendarBtn(win fyne.Window) *fyne.Container {
 				"OK",
 				"Cancel",
 				calendar(), func(b bool) {
-					dateBind.Set(d.dateChosen.Text)
+					date.Set(d.dateChosen.Text)
 				},
 				win,
 			).Show()
