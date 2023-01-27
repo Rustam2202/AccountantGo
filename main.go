@@ -22,6 +22,7 @@ func main() {
 		container.NewVBox(
 			gui.AddOperation(&DataBase, w),
 			gui.PeriodDates(&DataBase, w),
+		//	gui.MakeTable(&DataBase),
 		),
 	)
 

@@ -15,5 +15,5 @@ func Test1(t *testing.T) {
 	DataBase.AddIncome(1500, "2005-04-25 00:00:00")
 	DataBase.AddSpend(2000.02, "2010-12-31 23:59:59")
 	DataBase.AddSpend(3200, "2023-01-26 15:16:00")
-	DataBase.ShowRecords("Jan 20 2023", "Jan 26 2023")
+	DataBase.CalculateRecords("Jan 20 2023", "Jan 26 2023")
 }

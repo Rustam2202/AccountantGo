@@ -2,9 +2,11 @@ package gui
 
 import (
 	"accounter/db"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -35,8 +37,7 @@ func PeriodDates(dataBase *db.Database, win fyne.Window) *fyne.Container {
 	toBtn := CalendarBtn(dateToBind, win)
 
 	confirmBtn := widget.NewButton("Show", func() {
-		PrintRow()
-		//dataBase.ShowRecords(dateFromEntry.Text, dateToEntry.Text)
+		dialog.ShowCustom("title", "dissmis", MakeTable(dataBase), win)
 	})
 
 	table := widget.NewTable(
@@ -58,7 +59,6 @@ func PeriodDates(dataBase *db.Database, win fyne.Window) *fyne.Container {
 			toLabel, dateToEntry, toBtn, empty, yearEntry, yearLabel,
 		),
 		confirmBtn,
-		//table,
 	)
 	return c
 }

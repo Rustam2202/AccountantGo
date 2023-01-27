@@ -29,12 +29,9 @@ func (d *date) onSelected(t time.Time) {
 	d.dateChosen.SetText(t.Format("Mon 2 Jan 2006"))
 }
 
-func calendar() *fyne.Container /* *xwidget.Calendar */ {
-
+func calendar() *fyne.Container {
 	i.Alignment = fyne.TextAlignCenter
-
 	l.Alignment = fyne.TextAlignCenter
-
 	startingDate := time.Now()
 	cal := xwidget.NewCalendar(startingDate, d.onSelected)
 	return container.NewVBox(i, l, cal)
@@ -46,14 +43,13 @@ func CalendarBtn(date binding.String, win fyne.Window) *fyne.Container {
 		panic(err)
 	}
 	r := bufio.NewReader(calendFile)
-
 	CalendByte, err := ioutil.ReadAll(r)
 	if err != nil {
 		panic(err)
 	}
 	icon := fyne.NewStaticResource("icon", CalendByte)
+
 	c := container.NewVBox(
-		//	widget.NewButtonWithIcon("", theme.GridIcon(), func() {
 		widget.NewButtonWithIcon("Calendar", icon, func() {
 			dialog.NewCustomConfirm(
 				"Choose a date",
@@ -65,9 +61,6 @@ func CalendarBtn(date binding.String, win fyne.Window) *fyne.Container {
 				win,
 			).Show()
 		}),
-		//dateLabel,
-		//entryDate,
-		//widget.NewLabel("Label"),
 	)
 	return c
 }

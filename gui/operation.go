@@ -54,7 +54,5 @@ func AddOperation(dataBase *db.Database, win fyne.Window) *fyne.Container {
 			spendLabel, spendEntry, dateSpendEntry, calendarBtn2, commentSpendEntry, subBtn,
 		),
 	)
-
 	return c
-
 }

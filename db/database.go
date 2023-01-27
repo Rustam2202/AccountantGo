@@ -3,7 +3,6 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	
 
 	_ "github.com/go-sql-driver/mysql"
 	//	_ "github.com/mattn/go-sqlite3"
@@ -99,7 +98,7 @@ func (db *Database) AddSpend(spend float32, date string) {
 	statement.Exec()
 }
 
-func (db *Database) ShowRecords(date_from string, date_to string) {
+func (db *Database) CalculateRecords(date_from string, date_to string) []Record {
 	var err error
 	db.dataBase, err = sql.Open("mysql", fmt.Sprintf("root:password@tcp(127.0.0.1:3306)/%s", db.name))
 	if err != nil {
@@ -118,22 +117,14 @@ func (db *Database) ShowRecords(date_from string, date_to string) {
 	if err != nil {
 		panic(err)
 	}
-	//result := [][5]string{}
+	result := []Record{}
 	for rows.Next() {
 		var record Record
-		/*
-			var id *int
-			var date *string
-			var income *float64
-			var spend *float64
-			var comment *string
-			err := rows.Scan(&id, &income, &spend, &date, &comment)
-		*/
 		err := rows.Scan(&record.Id, &record.Income, &record.Spend, &record.Date, &record.Comment)
 		if err != nil {
 			fmt.Println(err)
 		}
-
-		//	fmt.Println(id, *date, income, spend)
+		result = append(result, record)
 	}
+	return result
 }
