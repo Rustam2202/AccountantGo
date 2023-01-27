@@ -10,11 +10,17 @@ import (
 
 func PeriodDates(dataBase *db.Database, win fyne.Window) *fyne.Container {
 
-	//	empty := widget.NewLabel("")
-	label := widget.NewLabel("Enter period or month for report")
-	label.Alignment = fyne.TextAlignCenter
+	empty := widget.NewLabel("")
+	labelPeriod := widget.NewLabel("Enter period:")
+	labelPeriod.Alignment = fyne.TextAlignCenter
+	labelMonth := widget.NewLabel(" or month for report:")
+	labelMonth.Alignment = fyne.TextAlignCenter
 	fromLabel := widget.NewLabel("From")
 	toLabel := widget.NewLabel("To")
+	monthLabel := widget.NewLabel("Month")
+	monthLabel.Alignment = fyne.TextAlignLeading
+	yearLabel := widget.NewLabel("Year")
+	yearLabel.Alignment = fyne.TextAlignLeading
 
 	dateFromBind := binding.BindString(nil)
 	dateToBind := binding.BindString(nil)
@@ -22,31 +28,16 @@ func PeriodDates(dataBase *db.Database, win fyne.Window) *fyne.Container {
 	dateFromEntry.SetPlaceHolder("01/01/2001")
 	dateToEntry := widget.NewEntryWithData(dateToBind)
 	dateToEntry.SetPlaceHolder("01/01/2001")
+	monthEntry := widget.NewSelect([]string{"Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov,", "Dec"}, func(s string) {})
+	yearEntry := widget.NewSelectEntry([]string{"2020", "2021", "2022", "2023"})
 
 	fromBtn := CalendarBtn(dateFromBind, win)
 	toBtn := CalendarBtn(dateToBind, win)
-
-	//fromEntry := widget.NewEntry()
-	//toEntry := widget.NewEntry()
-	//	monthLabel := widget.NewLabel("Month:")
-	//monthLabel.Alignment = fyne.TextAlignTrailing
-	//	yearLabel := widget.NewLabel("Year:")
-	//yearLabel.Alignment = fyne.TextAlignTrailing
-	//	monthEntry := widget.NewSelect([]string{"Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov,", "Dec"}, func(s string) {})
-	//	yearEntry := widget.NewSelectEntry([]string{"2020", "2021", "2022", "2023"})
 
 	confirmBtn := widget.NewButton("Show", func() {
 		PrintRow()
 		//dataBase.ShowRecords(dateFromEntry.Text, dateToEntry.Text)
 	})
-
-	labelCont := container.NewHBox(label)
-	//labelCont.MinSize().Width = fyne.Container.Layout.MinSize(50)
-	fromToCont := container.NewVBox(fromLabel, toLabel)
-	//fromEntry.Resize(fyne.NewSize(100,100))
-	entryCont := container.NewVBox(dateFromEntry, dateToEntry)
-	//entryCont.Resize(fyne.NewSize( 500,500))
-	btnCont := container.NewVBox(fromBtn, toBtn)
 
 	table := widget.NewTable(
 		func() (int, int) {
@@ -60,16 +51,14 @@ func PeriodDates(dataBase *db.Database, win fyne.Window) *fyne.Container {
 		},
 	)
 	table.MinSize()
-
 	c := container.NewVBox(
-		labelCont,
-		container.NewHBox(
-			fromToCont,
-			entryCont,
-			btnCont,
+		container.NewGridWithColumns(6,
+			empty, labelPeriod, empty, empty, labelMonth, empty,
+			fromLabel, dateFromEntry, fromBtn, empty, monthEntry, monthLabel,
+			toLabel, dateToEntry, toBtn, empty, yearEntry, yearLabel,
 		),
 		confirmBtn,
-		table,
+		//table,
 	)
 	return c
 }

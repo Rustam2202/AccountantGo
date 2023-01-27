@@ -20,6 +20,7 @@ func AddOperation(dataBase *db.Database, win fyne.Window) *fyne.Container {
 	spendLabel := widget.NewLabel("Spend")
 	sumLabel := widget.NewLabel("Sum")
 	dateLabel := widget.NewLabel("Date")
+	commentLabel := widget.NewLabel("Comment")
 
 	dateIncomeBind := binding.BindString(nil)
 	dateSpendBind := binding.BindString(nil)
@@ -30,6 +31,8 @@ func AddOperation(dataBase *db.Database, win fyne.Window) *fyne.Container {
 	dateIncomEntry.SetPlaceHolder("01/01/2001")
 	dateSpendEntry := widget.NewEntryWithData(dateSpendBind)
 	dateSpendEntry.SetPlaceHolder("01/01/2001")
+	commentIncomEntry := widget.NewEntry()
+	commentSpendEntry := widget.NewEntry()
 
 	addBtn := widget.NewButton("Add", func() {
 		inc, _ := strconv.ParseFloat(incomeEntry.Text, 32)
@@ -45,10 +48,10 @@ func AddOperation(dataBase *db.Database, win fyne.Window) *fyne.Container {
 
 	c := container.NewVBox(
 		enterOperLabel,
-		container.NewGridWithColumns(5,
-			emptyLabel, sumLabel, dateLabel, emptyLabel, emptyLabel,
-			incomeLabel, incomeEntry, dateIncomEntry, calendarBtn1, addBtn,
-			spendLabel, spendEntry, dateSpendEntry, calendarBtn2, subBtn,
+		container.NewGridWithColumns(6,
+			emptyLabel, sumLabel, dateLabel, emptyLabel, commentLabel, emptyLabel,
+			incomeLabel, incomeEntry, dateIncomEntry, calendarBtn1, commentIncomEntry, addBtn,
+			spendLabel, spendEntry, dateSpendEntry, calendarBtn2, commentSpendEntry, subBtn,
 		),
 	)
 

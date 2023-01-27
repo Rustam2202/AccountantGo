@@ -1,13 +1,15 @@
 package gui
 
 import (
+	"bufio"
+	"io/ioutil"
+	"os"
 	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/dialog"
-	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	xwidget "fyne.io/x/fyne/widget"
 )
@@ -38,16 +40,21 @@ func calendar() *fyne.Container /* *xwidget.Calendar */ {
 	return container.NewVBox(i, l, cal)
 }
 
-/*
-var str = "No Date"
-var data = binding.BindString(&str)
-var dateLabel = widget.NewLabelWithData(data)
-var entryDate = widget.NewEntryWithData(data)
-*/
-
 func CalendarBtn(date binding.String, win fyne.Window) *fyne.Container {
+	calendFile, err := os.Open("calendar.png")
+	if err != nil {
+		panic(err)
+	}
+	r := bufio.NewReader(calendFile)
+
+	CalendByte, err := ioutil.ReadAll(r)
+	if err != nil {
+		panic(err)
+	}
+	icon := fyne.NewStaticResource("icon", CalendByte)
 	c := container.NewVBox(
-		widget.NewButtonWithIcon("", theme.GridIcon(), func() {
+		//	widget.NewButtonWithIcon("", theme.GridIcon(), func() {
+		widget.NewButtonWithIcon("Calendar", icon, func() {
 			dialog.NewCustomConfirm(
 				"Choose a date",
 				"OK",
