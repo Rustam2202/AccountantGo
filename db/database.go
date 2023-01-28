@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"strconv"
+	
 
 	_ "github.com/go-sql-driver/mysql"
 	//	_ "github.com/mattn/go-sqlite3"
@@ -80,6 +81,9 @@ func (db *Database) AddIncome(income float32, date string) {
 		fmt.Println(err)
 		panic(err)
 	}
+
+
+	//dateToDB:=time.Time.Format()
 
 	query := fmt.Sprintf(
 		`INSERT INTO %s (income, date) VALUES (%f, "%s")`,

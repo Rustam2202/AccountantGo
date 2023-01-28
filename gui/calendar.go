@@ -17,7 +17,7 @@ import (
 var i = widget.NewLabel("Choose a date")
 var l = widget.NewLabel("")
 var d = &date{instruction: i, dateChosen: l}
-var dateChoosen string
+var showDateFormat = "02 Feb 2006 Mon"
 
 type date struct {
 	instruction *widget.Label
@@ -26,7 +26,7 @@ type date struct {
 
 func (d *date) onSelected(t time.Time) {
 	d.instruction.SetText("Date Selected:")
-	d.dateChosen.SetText(t.Format("Mon 2 Jan 2006"))
+	d.dateChosen.SetText(t.Format(showDateFormat))
 }
 
 func calendar() *fyne.Container {
@@ -38,6 +38,26 @@ func calendar() *fyne.Container {
 }
 
 func CalendarBtn(date binding.String, win fyne.Window) *fyne.Container {
+	icon := calenIcon()
+
+	c := container.NewVBox(
+		widget.NewButtonWithIcon("Calendar", icon, func() {
+			dialog.NewCustomConfirm(
+				"Choose a date",
+				"OK",
+				"Cancel",
+				calendar(), func(b bool) {
+					dateToEntry, _ := time.Parse(showDateFormat, d.dateChosen.Text)
+					date.Set(dateToEntry.Format("02.01.2006"))
+				},
+				win,
+			).Show()
+		}),
+	)
+	return c
+}
+
+func calenIcon() *fyne.StaticResource {
 	calendFile, err := os.Open("calendar.png")
 	if err != nil {
 		panic(err)
@@ -47,20 +67,5 @@ func CalendarBtn(date binding.String, win fyne.Window) *fyne.Container {
 	if err != nil {
 		panic(err)
 	}
-	icon := fyne.NewStaticResource("icon", CalendByte)
-
-	c := container.NewVBox(
-		widget.NewButtonWithIcon("Calendar", icon, func() {
-			dialog.NewCustomConfirm(
-				"Choose a date",
-				"OK",
-				"Cancel",
-				calendar(), func(b bool) {
-					date.Set(d.dateChosen.Text)
-				},
-				win,
-			).Show()
-		}),
-	)
-	return c
+	return fyne.NewStaticResource("icon", CalendByte)
 }
