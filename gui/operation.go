@@ -43,7 +43,7 @@ func AddOperation(dataBase *db.Database, win fyne.Window) *fyne.Container {
 		fyne.CurrentApp().SendNotification(fyne.NewNotification("Add success","Income added"))
 	})
 	subBtn := widget.NewButton("Sub", func() {
-		dataBase.AddIncome(checkEntry(spendEntry.Text, dateSpendEntry.Text, win))
+		dataBase.AddSpend(checkEntry(spendEntry.Text, dateSpendEntry.Text, win))
 		fyne.CurrentApp().SendNotification(fyne.NewNotification("Sun success","Spend added"))
 	})
 

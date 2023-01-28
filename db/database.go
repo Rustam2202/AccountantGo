@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"strconv"
-	
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	//	_ "github.com/mattn/go-sqlite3"
@@ -56,9 +56,9 @@ func (db *Database) CreateDataBase(name string) {
 				id INT PRIMARY KEY AUTO_INCREMENT,
 				income FLOAT,
 				spend FLOAT,
-				date TEXT NOT NULL,
+				date DATE NOT NULL, 
 				comment TEXT
-		)`, TableName))
+		)`, TableName)) // DATE yyyy-mm-dd format
 	if err != nil {
 		panic(err)
 	}
@@ -82,12 +82,12 @@ func (db *Database) AddIncome(income float32, date string) {
 		panic(err)
 	}
 
-
-	//dateToDB:=time.Time.Format()
+	t, err := time.Parse("02.01.2006", date)
+	dateToDB := t.Format("2006-01-02")
 
 	query := fmt.Sprintf(
 		`INSERT INTO %s (income, date) VALUES (%f, "%s")`,
-		TableName, income, date)
+		TableName, income, dateToDB)
 	statement, err := db.dataBase.Prepare(query)
 	if err != nil {
 		panic(err)
