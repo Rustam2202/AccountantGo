@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 	//	_ "github.com/mattn/go-sqlite3"
@@ -12,6 +13,8 @@ type Database struct {
 	name     string
 	dataBase *sql.DB
 }
+
+const colNumb = 5
 
 type Record struct {
 	Id      *int
@@ -49,10 +52,10 @@ func (db *Database) CreateDataBase(name string) {
 	_, err = db.dataBase.Exec(
 		fmt.Sprintf(
 			`CREATE TABLE IF NOT EXISTS %s ( 
-				id INT,
+				id INT PRIMARY KEY AUTO_INCREMENT,
 				income FLOAT,
 				spend FLOAT,
-				date DATETIME,
+				date TEXT NOT NULL,
 				comment TEXT
 		)`, TableName))
 	if err != nil {
@@ -79,7 +82,7 @@ func (db *Database) AddIncome(income float32, date string) {
 	}
 
 	query := fmt.Sprintf(
-		`INSERT %s(income, date) VALUES (%f, "%s")`,
+		`INSERT INTO %s (income, date) VALUES (%f, "%s")`,
 		TableName, income, date)
 	statement, err := db.dataBase.Prepare(query)
 	if err != nil {
@@ -98,7 +101,7 @@ func (db *Database) AddSpend(spend float32, date string) {
 	statement.Exec()
 }
 
-func (db *Database) CalculateRecords(date_from string, date_to string) []Record {
+func (db *Database) CalculateRecords(date_from string, date_to string) [][colNumb]string {
 	var err error
 	db.dataBase, err = sql.Open("mysql", fmt.Sprintf("root:password@tcp(127.0.0.1:3306)/%s", db.name))
 	if err != nil {
@@ -117,12 +120,30 @@ func (db *Database) CalculateRecords(date_from string, date_to string) []Record 
 	if err != nil {
 		panic(err)
 	}
-	result := []Record{}
+
+	result := [][colNumb]string{}
 	for rows.Next() {
-		var record Record
-		err := rows.Scan(&record.Id, &record.Income, &record.Spend, &record.Date, &record.Comment)
+		var id *int
+		var date *string // time.Time
+		var income, spend *float32
+		var comment *string
+		err := rows.Scan(&id, &income, &spend, &date, &comment)
 		if err != nil {
 			fmt.Println(err)
+		}
+
+		// [0]=id, [1]=date, [2]=income, [3]=spend, [4]=comment; id and date is NOL NULL
+		var record [colNumb]string
+		record[0] = strconv.Itoa(*id)
+		record[1] = *date
+		if income != nil {
+			record[2] = fmt.Sprintf("%0.2f", *income)
+		}
+		if spend != nil {
+			record[3] = fmt.Sprintf("%0.2f", *spend)
+		}
+		if comment != nil {
+			record[4] = *comment
 		}
 		result = append(result, record)
 	}

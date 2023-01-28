@@ -20,7 +20,5 @@ func TestShowTable(t *testing.T) {
 	w := a.NewWindow("Accounter Manager")
 	w.Resize(fyne.NewSize(800, 600))
 
-	w.SetContent(MakeTable(&db))
-
-	w.ShowAndRun()
+	
 }

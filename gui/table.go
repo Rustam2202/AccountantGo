@@ -2,16 +2,11 @@ package gui
 
 import (
 	"accounter/db"
-	"fmt"
+	
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/widget"
 )
-
-var data_table = [][]string{
-	[]string{"top left", "top right"},
-	[]string{"bottom left", "bottom right"},
-}
 
 func MakeTable(dataBase *db.Database) fyne.CanvasObject {
 	data := dataBase.CalculateRecords("", "")
@@ -26,15 +21,15 @@ func MakeTable(dataBase *db.Database) fyne.CanvasObject {
 			label := o.(*widget.Label)
 			switch i.Col {
 			case 0:
-				label.SetText(fmt.Sprintf("%d", *data[i.Row].Id))
+				label.SetText(data[i.Row][0])
 			case 1:
-				label.SetText(fmt.Sprintf("%0.2f", *data[i.Row].Income))
+				label.SetText(data[i.Row][1])
 			case 2:
-				label.SetText(fmt.Sprintf("%0.2f", *data[i.Row].Spend))
+				label.SetText(data[i.Row][2])
 			case 3:
-				label.SetText(*data[i.Row].Date)
+				label.SetText(data[i.Row][3])
 			case 4:
-				label.SetText(*data[i.Row].Comment)
+				label.SetText(data[i.Row][4])
 			default:
 				//label.SetText(fmt.Sprintf("Cell %d, %d", i.Row+1, i.Col+1))
 			}

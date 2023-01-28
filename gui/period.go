@@ -6,7 +6,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
-	"fyne.io/fyne/v2/dialog"
+	
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -37,7 +37,14 @@ func PeriodDates(dataBase *db.Database, win fyne.Window) *fyne.Container {
 	toBtn := CalendarBtn(dateToBind, win)
 
 	confirmBtn := widget.NewButton("Show", func() {
-		dialog.ShowCustom("title", "dissmis", MakeTable(dataBase), win)
+		w := fyne.CurrentApp().NewWindow("Hello")
+		w.SetContent(MakeTable(dataBase))
+		w.Resize(fyne.NewSize(400,400))
+		w.Show()
+
+		//t := MakeTable(dataBase)
+		//t.Resize(fyne.NewSize(100, 100))
+		//dialog.ShowCustom("title", "dissmis", MakeTable(dataBase), win)
 	})
 
 	table := widget.NewTable(
