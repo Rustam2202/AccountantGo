@@ -43,6 +43,7 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 			w.Resize(fyne.NewSize(400,400))
 			w.Show()
 		*/
+		
 		table:=MakeTable(dataBase)
 	//	table.Move(fyne.NewPos(0,100))
 		cont.AddObject(table)
