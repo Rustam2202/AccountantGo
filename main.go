@@ -37,48 +37,55 @@ func main() {
 			case 4:
 				label.SetText("Comment")
 			default:
+				
 			}
 		},
 	)
+	tableHeader.Resize(fyne.Size{600, 50})
 	tableHeader.SetColumnWidth(0, 100)
 	tableHeader.SetColumnWidth(1, 100)
 	tableHeader.SetColumnWidth(2, 100)
 	tableHeader.SetColumnWidth(3, 100)
 	tableHeader.SetColumnWidth(4, 100)
-	tableHeader.SetRowHeight(0,100)
+	tableHeader.SetRowHeight(0, 50)
 
-	table := widget.NewTable(
-		func() (int, int) { return 0, 0 },
-		func() fyne.CanvasObject { return widget.NewLabel("Cell") },
-		func(tci widget.TableCellID, co fyne.CanvasObject) {},
+	table1 := widget.NewTable(
+		func() (int, int) { return 1, 5 },
+		func() fyne.CanvasObject { return widget.NewLabel("cell") },
+		func(tci widget.TableCellID, co fyne.CanvasObject) {
+			
+		},
 	)
-	table.SetColumnWidth(0, 100)
-	table.SetColumnWidth(1, 100)
-	table.SetColumnWidth(2, 100)
-	table.SetColumnWidth(3, 100)
-	table.SetColumnWidth(4, 100)
+	table1.Resize(fyne.Size{600, 50})
+	table1.Move(fyne.NewPos(0, 60))
+	table1.SetColumnWidth(0, 100)
+	table1.SetColumnWidth(1, 100)
+	table1.SetColumnWidth(2, 100)
+	table1.SetColumnWidth(3, 100)
+	table1.SetColumnWidth(4, 100)
+	table1.SetRowHeight(0, 50)
 
-	table.Resize(fyne.NewSize(100, 100))
 	//h:=fyne.Size{1000,1000}
 	//table=table.CreateRenderer().MinSize().Height
-	ContWithTable := container.NewMax(table)
-	ContWithTable.Hide()
+	ContWithTable := container.NewMax()
+//	ContWithTable.Hide()
 	//contWithTable.Show()
 
 	w.SetContent(
+		container.NewGridWithColumns(
+			 1,
+			
+			container.NewVBox(
+				gui.AddOperation(&DataBase, w),
+				gui.PeriodDates(ContWithTable, &DataBase, w),
+			),
+			
 
-		container.NewAdaptiveGrid(
-			1,
-			gui.AddOperation(&DataBase, w),
-			gui.PeriodDates(ContWithTable, &DataBase, w),
-		//	container.NewVBox(
+			container.NewWithoutLayout(
 				tableHeader,
-				ContWithTable,
-		//	),
-
-		//	gui.MakeTable(&DataBase),
+				table1,
+			),
 		),
 	)
-
 	w.ShowAndRun()
 }

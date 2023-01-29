@@ -38,6 +38,7 @@ func MakeTable(dataBase *db.Database) fyne.CanvasObject {
 	table.SetColumnWidth(2, 60)
 	table.SetColumnWidth(3, 60)
 	table.SetColumnWidth(4, 100)
+	table.SetRowHeight(0, 40)
 
 	return table
 }
