@@ -17,7 +17,7 @@ import (
 var i = widget.NewLabel("Choose a date")
 var l = widget.NewLabel("")
 var d = &date{instruction: i, dateChosen: l}
-var showDateFormat = "02 Feb 2006 Mon"
+var showDateFormat = "02 Jan 2006 Mon"
 
 type date struct {
 	instruction *widget.Label

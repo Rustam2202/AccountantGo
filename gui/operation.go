@@ -40,11 +40,22 @@ func AddOperation(dataBase *db.Database, win fyne.Window) *fyne.Container {
 	addBtn := widget.NewButton("Add", func() {
 		dataBase.AddIncome(checkEntry(incomeEntry.Text, dateIncomEntry.Text, win))
 		// Need uiniq ID or toml for Notification
-		fyne.CurrentApp().SendNotification(fyne.NewNotification("Add success","Income added"))
+		fyne.CurrentApp().SendNotification(fyne.NewNotification("Add success", "Income added"))
+		// clear entry fields
+		incomeEntry.Text = ""
+		dateIncomEntry.Text = ""
+		incomeEntry.Refresh()
+		dateIncomEntry.Refresh()
 	})
 	subBtn := widget.NewButton("Sub", func() {
 		dataBase.AddSpend(checkEntry(spendEntry.Text, dateSpendEntry.Text, win))
-		fyne.CurrentApp().SendNotification(fyne.NewNotification("Sun success","Spend added"))
+		// Need uiniq ID or toml for Notification
+		fyne.CurrentApp().SendNotification(fyne.NewNotification("Sub success", "Spend added"))
+		// clear entry fields
+		spendEntry.Text = ""
+		dateSpendEntry.Text = ""
+		spendEntry.Refresh()
+		dateSpendEntry.Refresh()
 	})
 
 	calendarBtn1 := CalendarBtn(dateIncomeBind, win)

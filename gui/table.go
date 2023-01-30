@@ -14,7 +14,7 @@ const (
 	height = 35
 )
 
-func MakeTable(dataBase *db.Database) fyne.CanvasObject {
+func MakeTable( dataBase *db.Database) fyne.CanvasObject {
 	tableWithHead := container.NewWithoutLayout()
 	tableWithHead.Add(tableHeader())
 
