@@ -16,12 +16,16 @@ const (
 	tableWidth = 600
 )
 
-func MakeTable(dateFrom time.Time, dateTo time.Time, dataBase *db.Database) fyne.CanvasObject {
+func MakeTable(dateFrom time.Time, dateTo time.Time, dataBase *db.Database) (fyne.CanvasObject, error) {
+
+	data, err := dataBase.CalculateRecords(dateFrom, dateFrom)
+	if err != nil {
+		return nil, err
+	}
+
 	tableWithHead := container.NewWithoutLayout()
 	tableWithHead.Add(tableHeader())
 
-	data := dataBase.CalculateRecords(dateFrom, dateFrom)
-	
 	table := widget.NewTable(
 		func() (int, int) {
 			return len(data), 5
@@ -57,7 +61,7 @@ func MakeTable(dateFrom time.Time, dateTo time.Time, dataBase *db.Database) fyne
 	table.SetColumnWidth(4, width)
 	table.SetRowHeight(0, height)
 	tableWithHead.Add(table)
-	return tableWithHead
+	return tableWithHead, nil
 }
 
 func tableHeader() *widget.Table {

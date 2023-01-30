@@ -44,7 +44,7 @@ var entries = []entryTest{
 
 func TestDate(t *testing.T) {
 	for _, test := range correctDatesTests {
-		if out, _ := CheckDate(test.input); !datesCompare(out, test.expected) {
+		if out, _ := CheckDate(test.input); !DatesCompare(out, test.expected) {
 			t.Errorf("Output %q not equal to expected %q", out, test.expected)
 		}
 	}
@@ -62,7 +62,7 @@ func TestEntry(t *testing.T) {
 		if sum != test.expectedSum {
 			t.Errorf("Expexted: %f, got: %f", test.expectedSum, sum)
 		}
-		if !datesCompare(date, test.expectedDate) {
+		if !DatesCompare(date, test.expectedDate) {
 			t.Errorf("Expected: %q, got: %q", test.expectedDate, date)
 		}
 		/*
@@ -73,7 +73,4 @@ func TestEntry(t *testing.T) {
 	}
 }
 
-func datesCompare(first, second time.Time) bool {
-	// if dates equal then true
-	return !(first.After(second) && first.Before(second))
-}
+

@@ -7,7 +7,6 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
-	//	_ "github.com/mattn/go-sqlite3"
 )
 
 type Database struct {
@@ -34,23 +33,22 @@ const (
 	sqlDateFormat = "2006-01-02"
 )
 
-func (db *Database) CreateDataBase(name string) {
+func (db *Database) CreateDataBase(name string) error {
 	var err error
 	db.dataBase, err = sql.Open("mysql", "root:password@tcp(127.0.0.1:3306)/")
 	if err != nil {
-		panic(err)
+		return err
 	}
-	// defer db.dataBase.Close()
+	defer db.dataBase.Close()
 
 	_, err = db.dataBase.Exec("CREATE DATABASE IF NOT EXISTS " + name)
 	if err != nil {
-		fmt.Println(err)
-		panic(err)
+		return err
 	}
 
 	_, err = db.dataBase.Exec("USE " + name)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	_, err = db.dataBase.Exec(
@@ -61,68 +59,73 @@ func (db *Database) CreateDataBase(name string) {
 				spend FLOAT,
 				date DATE NOT NULL, 
 				comment TEXT
-		)`, TableName)) // DATE yyyy-mm-dd format
+		)`, TableName)) // DATE: yyyy-mm-dd sql-format
 	if err != nil {
-		panic(err)
+		return err
 	}
 	db.name = name
+	return nil
+}
+
+func (db *Database) OpenDataBase(name string) error {
+	var err error
+	db.dataBase, err = sql.Open("mysql", "root:password@tcp(127.0.0.1:3306)/")
+	if err != nil {
+		return err
+	}
+	_, err = db.dataBase.Exec("USE " + name)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (db *Database) GetDataBase() *Database {
 	return db
 }
 
-func (db *Database) AddIncome(income float32, date time.Time) {
-	var err error
-	db.dataBase, err = sql.Open("mysql", fmt.Sprintf("root:password@tcp(127.0.0.1:3306)/%s", db.name))
-	if err != nil {
-		panic(err)
+func (db *Database) AddIncome(income float32, date time.Time) error {
+	if err := db.OpenDataBase(db.name); err != nil {
+		return err
 	}
 
-	_, err = db.dataBase.Exec("USE " + db.name)
-	if err != nil {
-		fmt.Println(err)
-		panic(err)
-	}
-
-	query := fmt.Sprintf(
-		`INSERT INTO %s (income, date) VALUES (%f, "%s")`,
+	query := fmt.Sprintf(`INSERT INTO %s (income, date) VALUES (%f, "%s")`,
 		TableName, income, date.Format(sqlDateFormat))
 	statement, err := db.dataBase.Prepare(query)
 	if err != nil {
-		panic(err)
+		return err
 	}
+	//defer db.dataBase.Close()
 	statement.Exec()
+	return nil
 }
 
-func (db *Database) AddSpend(spend float32, date time.Time) {
+func (db *Database) AddSpend(spend float32, date time.Time) error {
+	if err := db.OpenDataBase(db.name); err != nil {
+		return err
+	}
+
 	query := fmt.Sprintf(`INSERT INTO %s (spend, date) VALUES (%f, '%s')`,
-		TableName, spend, date)
+		TableName, spend, date.Format(sqlDateFormat))
 	statement, err := db.dataBase.Prepare(query)
 	if err != nil {
-		panic(err)
+		return err
 	}
+	//defer db.dataBase.Close()
 	statement.Exec()
+	return nil
 }
 
-func (db *Database) CalculateRecords(dateFrom time.Time, dateTo time.Time) [][colNumb]string {
-	var err error
-	db.dataBase, err = sql.Open("mysql", fmt.Sprintf("root:password@tcp(127.0.0.1:3306)/%s", db.name))
-	if err != nil {
-		panic(err)
+func (db *Database) CalculateRecords(dateFrom time.Time, dateTo time.Time) ([][colNumb]string, error) {
+	if err := db.OpenDataBase(db.name); err != nil {
+		return nil, err
 	}
-	_, err = db.dataBase.Exec("USE " + db.name)
-	if err != nil {
-		fmt.Println(err)
-		panic(err)
-	}
-
 	query := fmt.Sprintf(`SELECT * FROM %s.%s WHERE date >= '%s' AND date <= '%s'`,
 		db.name, TableName, dateFrom.Format(sqlDateFormat), dateTo.Format(sqlDateFormat),
 	)
 	rows, err := db.dataBase.Query(query)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	result := [][colNumb]string{}
@@ -155,5 +158,5 @@ func (db *Database) CalculateRecords(dateFrom time.Time, dateTo time.Time) [][co
 		}
 		result = append(result, record)
 	}
-	return result
+	return result, nil
 }

@@ -3,6 +3,7 @@ package gui
 import (
 	"accounter/db"
 	"accounter/utils"
+
 	"strconv"
 	"time"
 
@@ -51,9 +52,14 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 
 		if err != nil {
 			dialog.ShowError(err, win)
+			return
 		}
 
-		table := MakeTable(dateFrom, dateTo, dataBase)
+		table, err := MakeTable(dateFrom, dateTo, dataBase)
+		if err != nil {
+			dialog.ShowError(err, win)
+			return
+		}
 		cont.Add(table)
 		cont.Show()
 	})

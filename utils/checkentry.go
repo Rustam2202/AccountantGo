@@ -69,3 +69,8 @@ func CheckDate(date string) (time.Time, error) {
 		return t, err
 	}
 }
+
+func DatesCompare(first, second time.Time) bool {
+	// if dates equal then true
+	return !(first.After(second) && first.Before(second))
+}
