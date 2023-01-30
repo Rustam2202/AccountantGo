@@ -3,9 +3,8 @@ package gui
 import (
 	// db "accounter/db"
 	"accounter/db"
+	"accounter/utils"
 	"errors"
-	"math"
-	"strconv"
 	"time"
 
 	"fyne.io/fyne/v2"
@@ -15,28 +14,18 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-// allowed manual input date formats (dd.mm.yyyy)
-const (
-	format1 = "02.01.2006"
-	format2 = "02/01/2006"
-	format3 = "02-01-2006"
-	format4 = "02.01.06"
-	format5 = "02/01/06"
-	format6 = "02-01-06"
-	format7 = "02,01,2006"
-	format8 = "02,01,06"
-)
-
 func AddOperation(dataBase *db.Database, win fyne.Window) *fyne.Container {
-	enterOperLabel := widget.NewLabel("Enter operation:")
+	enterOperLabel := widget.NewLabel("Enter income and/or spend to add in database")
 	enterOperLabel.Alignment = fyne.TextAlignCenter
 
-	emptyLabel := widget.NewLabel("")
-	incomeLabel := widget.NewLabel("Income")
-	spendLabel := widget.NewLabel("Spend")
-	sumLabel := widget.NewLabel("Sum")
-	dateLabel := widget.NewLabel("Date")
-	commentLabel := widget.NewLabel("Comment")
+	/*
+		emptyLabel := widget.NewLabel("")
+		incomeLabel := widget.NewLabel("Income")
+		spendLabel := widget.NewLabel("Spend")
+		sumLabel := widget.NewLabel("Sum")
+		dateLabel := widget.NewLabel("Date")
+		commentLabel := widget.NewLabel("Comment")
+	*/
 
 	dateIncomeBind := binding.BindString(nil)
 	dateSpendBind := binding.BindString(nil)
@@ -46,11 +35,13 @@ func AddOperation(dataBase *db.Database, win fyne.Window) *fyne.Container {
 	spendEntry := widget.NewEntry()
 	spendEntry.SetPlaceHolder("Enter Spend")
 	dateIncomEntry := widget.NewEntryWithData(dateIncomeBind)
-	dateIncomEntry.SetPlaceHolder(format1)
+	dateIncomEntry.SetPlaceHolder(time.Now().Format("02.01.2006"))
 	dateSpendEntry := widget.NewEntryWithData(dateSpendBind)
-	dateSpendEntry.SetPlaceHolder(format1)
+	dateSpendEntry.SetPlaceHolder(time.Now().Format("02.01.2006"))
 	commentIncomEntry := widget.NewEntry()
+	commentIncomEntry.SetPlaceHolder("Enter comment")
 	commentSpendEntry := widget.NewEntry()
+	commentSpendEntry.SetPlaceHolder("Enter comment")
 
 	addBtn := widget.NewButton("Add record", func() {
 		if !(incomeEntry.Text != "" || spendEntry.Text != "") {
@@ -62,7 +53,7 @@ func AddOperation(dataBase *db.Database, win fyne.Window) *fyne.Container {
 		var dateInc, dateSpn time.Time
 		var errInc, errSpn error
 		if incomeEntry.Text != "" {
-			income, dateInc, errInc = checkEntry(incomeEntry.Text, dateIncomEntry.Text)
+			income, dateInc, errInc = utils.CheckEntry(incomeEntry.Text, dateIncomEntry.Text)
 			if errInc != nil {
 				dialog.ShowError(errInc, win)
 				return
@@ -70,7 +61,7 @@ func AddOperation(dataBase *db.Database, win fyne.Window) *fyne.Container {
 			dataBase.AddIncome(income, dateInc)
 		}
 		if spendEntry.Text != "" {
-			spend, dateSpn, errSpn = checkEntry(spendEntry.Text, dateSpendEntry.Text)
+			spend, dateSpn, errSpn = utils.CheckEntry(spendEntry.Text, dateSpendEntry.Text)
 			if errSpn != nil {
 				dialog.ShowError(errSpn, win)
 				return
@@ -104,55 +95,4 @@ func AddOperation(dataBase *db.Database, win fyne.Window) *fyne.Container {
 			),
 			addBtn),
 	)
-}
-
-func checkEntry(sumStr string, dateStr string) (float32, time.Time, error) {
-
-	sum, err := strconv.ParseFloat(sumStr, 32)
-	if err != nil {
-		return 0, time.Time{}, errors.New("Sum format error")
-	}
-
-	var date time.Time
-	if dateStr == "" {
-		date = time.Now() // if no manual or calendar input then set today
-	} else {
-		temp, err2 := checkDate(dateStr)
-		if err2 != nil {
-			return 0, date, err2
-		} else {
-			date = temp
-		}
-	}
-	return float32(math.Abs(sum)), date, nil
-
-}
-
-func checkDate(date string) (time.Time, error) {
-
-	var t time.Time
-	var err error
-
-	// try to change on switch
-	if t, err = time.Parse(format1, date); err == nil {
-		return t, nil
-	} else if t, err = time.Parse(format1, date); err == nil {
-		return t, nil
-	} else if t, err = time.Parse(format2, date); err == nil {
-		return t, nil
-	} else if t, err = time.Parse(format3, date); err == nil {
-		return t, nil
-	} else if t, err = time.Parse(format4, date); err == nil {
-		return t, nil
-	} else if t, err = time.Parse(format5, date); err == nil {
-		return t, nil
-	} else if t, err = time.Parse(format6, date); err == nil {
-		return t, nil
-	} else if t, err = time.Parse(format7, date); err == nil {
-		return t, nil
-	} else if t, err = time.Parse(format8, date); err == nil {
-		return t, nil
-	} else {
-		return t, err
-	}
 }

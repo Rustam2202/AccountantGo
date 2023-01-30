@@ -2,6 +2,7 @@ package gui
 
 import (
 	"accounter/db"
+	"accounter/utils"
 	"strconv"
 	"time"
 
@@ -17,24 +18,27 @@ var months = []string{"Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", 
 func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *fyne.Container {
 
 	empty := widget.NewLabel("")
-	labelPeriod := widget.NewLabel("Enter period:")
+	labelPeriod := widget.NewLabel("Enter period or month/year to show report")
 	labelPeriod.Alignment = fyne.TextAlignCenter
 	labelMonth := widget.NewLabel(" or month for report:")
-	labelMonth.Alignment = fyne.TextAlignCenter
-	fromLabel := widget.NewLabel("From")
-	toLabel := widget.NewLabel("To")
-	monthLabel := widget.NewLabel("Month")
-	monthLabel.Alignment = fyne.TextAlignLeading
-	yearLabel := widget.NewLabel("Year")
-	yearLabel.Alignment = fyne.TextAlignLeading
+	labelMonth.Alignment = fyne.TextAlignTrailing
+	fromLabel := widget.NewLabel("Period begin:")
+	fromLabel.Alignment = fyne.TextAlignTrailing
+	toLabel := widget.NewLabel("Period end:")
+	toLabel.Alignment = fyne.TextAlignTrailing
+	monthLabel := widget.NewLabel("Report for month:")
+	monthLabel.Alignment = fyne.TextAlignTrailing
+	yearLabel := widget.NewLabel("Report for year:")
+	yearLabel.Alignment = fyne.TextAlignTrailing
 
 	dateFromBind := binding.BindString(nil)
 	dateToBind := binding.BindString(nil)
 	dateFromEntry := widget.NewEntryWithData(dateFromBind)
-	dateFromEntry.SetPlaceHolder(format1)
+	dateFromEntry.SetPlaceHolder(utils.Format1)
 	dateToEntry := widget.NewEntryWithData(dateToBind)
-	dateToEntry.SetPlaceHolder(format1)
+	dateToEntry.SetPlaceHolder(utils.Format1)
 	monthEntry := widget.NewSelect(months, func(s string) {})
+	yearOfMonth := widget.NewSelectEntry(years())
 	yearEntry := widget.NewSelectEntry(years())
 
 	fromBtn := CalendarBtn(dateFromBind, win)
@@ -47,15 +51,20 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 		cont.Show()
 	})
 
-	c := container.NewVBox(
-		container.NewGridWithColumns(6,
-			empty, labelPeriod, empty, empty, labelMonth, empty,
-			fromLabel, dateFromEntry, fromBtn, empty, monthEntry, monthLabel,
-			toLabel, dateToEntry, toBtn, empty, yearEntry, yearLabel,
+	return container.NewVBox(
+		labelPeriod,
+		container.NewHBox(
+			container.NewGridWithColumns(4,
+				fromLabel, dateFromEntry, fromBtn, monthLabel,
+				toLabel, dateToEntry, toBtn, yearLabel,
+			),
+			container.NewGridWithRows(2,
+				monthEntry, yearOfMonth,
+				yearEntry, empty,
+			),
 		),
 		confirmBtn,
 	)
-	return c
 }
 
 // Make 3 (2 last and current) years for yearEntry widget

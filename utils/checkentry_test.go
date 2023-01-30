@@ -1,4 +1,4 @@
-package gui
+package utils
 
 import (
 	"errors"
@@ -44,13 +44,13 @@ var entries = []entryTest{
 
 func TestDate(t *testing.T) {
 	for _, test := range correctDatesTests {
-		if out, _ := checkDate(test.input); !datesCompare(out, test.expected) {
+		if out, _ := CheckDate(test.input); !datesCompare(out, test.expected) {
 			t.Errorf("Output %q not equal to expected %q", out, test.expected)
 		}
 	}
 
 	for _, test := range wrongFormatDatesTests {
-		if _, err := checkDate(test.input); err == nil {
+		if _, err := CheckDate(test.input); err == nil {
 			t.Errorf("Expected error %q", err)
 		}
 	}
@@ -58,7 +58,7 @@ func TestDate(t *testing.T) {
 
 func TestEntry(t *testing.T) {
 	for _, test := range entries {
-		sum, date, err := checkEntry(test.inputSum, test.inputDate)
+		sum, date, err := CheckEntry(test.inputSum, test.inputDate)
 		if sum != test.expectedSum {
 			t.Errorf("Expexted: %f, got: %f", test.expectedSum, sum)
 		}

@@ -17,7 +17,7 @@ func main() {
 
 	a := app.New()
 	w := a.NewWindow("Accounter Manager")
-	w.Resize(fyne.NewSize(400, 600))
+	w.Resize(fyne.NewSize(300, 600))
 
 	ContWithTable := container.NewWithoutLayout()
 

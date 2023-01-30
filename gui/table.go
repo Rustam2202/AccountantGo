@@ -10,9 +10,10 @@ import (
 )
 
 const (
-	no     = 40
-	width  = 150
-	height = 35
+	no         = 40
+	width      = 150
+	height     = 35
+	tableWidth = 600
 )
 
 func MakeTable(dateFrom time.Time, dateTo time.Time, dataBase *db.Database) fyne.CanvasObject {
@@ -46,7 +47,7 @@ func MakeTable(dateFrom time.Time, dateTo time.Time, dataBase *db.Database) fyne
 			}
 		})
 
-	table.Resize(fyne.Size{800, 300})
+	table.Resize(fyne.Size{tableWidth, 300})
 	table.Move(fyne.NewPos(0, 60))
 	table.SetColumnWidth(0, no)
 	table.SetColumnWidth(1, width)
@@ -84,7 +85,7 @@ func tableHeader() *widget.Table {
 			}
 		},
 	)
-	tableHeader.Resize(fyne.Size{800, height})
+	tableHeader.Resize(fyne.Size{tableWidth, height})
 	tableHeader.SetColumnWidth(0, no)
 	tableHeader.SetColumnWidth(1, width)
 	tableHeader.SetColumnWidth(2, width)
