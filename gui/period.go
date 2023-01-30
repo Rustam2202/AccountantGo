@@ -41,8 +41,11 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 	toBtn := CalendarBtn(dateToBind, win)
 
 	confirmBtn := widget.NewButton("Show", func() {
-		table := MakeTable(dataBase)
-		cont.AddObject(table)
+		
+
+
+	//	table := MakeTable( dataBase)
+	//	cont.AddObject(table)
 		cont.Show()
 	})
 

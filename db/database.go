@@ -69,7 +69,7 @@ func (db *Database) GetDataBase() *Database {
 	return db
 }
 
-func (db *Database) AddIncome(income float32, date string) {
+func (db *Database) AddIncome(income float32, date time.Time) {
 	var err error
 	db.dataBase, err = sql.Open("mysql", fmt.Sprintf("root:password@tcp(127.0.0.1:3306)/%s", db.name))
 	if err != nil {
@@ -82,12 +82,12 @@ func (db *Database) AddIncome(income float32, date string) {
 		panic(err)
 	}
 
-	t, err := time.Parse("02.01.2006", date)
-	dateToDB := t.Format("2006-01-02")
+	//t, err := time.Parse("02.01.2006", date)
+	//dateToDB := t.Format("2006-01-02")
 
 	query := fmt.Sprintf(
 		`INSERT INTO %s (income, date) VALUES (%f, "%s")`,
-		TableName, income, dateToDB)
+		TableName, income, "")
 	statement, err := db.dataBase.Prepare(query)
 	if err != nil {
 		panic(err)
@@ -95,7 +95,7 @@ func (db *Database) AddIncome(income float32, date string) {
 	statement.Exec()
 }
 
-func (db *Database) AddSpend(spend float32, date string) {
+func (db *Database) AddSpend(spend float32, date time.Time) {
 	query := fmt.Sprintf(`INSERT INTO %s (spend, date) VALUES (%f, '%s')`,
 		TableName, spend, date)
 	statement, err := db.dataBase.Prepare(query)
@@ -105,7 +105,7 @@ func (db *Database) AddSpend(spend float32, date string) {
 	statement.Exec()
 }
 
-func (db *Database) CalculateRecords(date_from string, date_to string) [][colNumb]string {
+func (db *Database) CalculateRecords(dateFrom time.Time, dateTo time.Time) [][colNumb]string {
 	var err error
 	db.dataBase, err = sql.Open("mysql", fmt.Sprintf("root:password@tcp(127.0.0.1:3306)/%s", db.name))
 	if err != nil {

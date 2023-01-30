@@ -4,6 +4,7 @@ import (
 	// db "accounter/db"
 	"accounter/db"
 	"errors"
+	"math"
 	"strconv"
 	"time"
 
@@ -12,6 +13,18 @@ import (
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
+)
+
+// allowed manual input date formats (dd.mm.yyyy)
+const (
+	format1 = "02.01.2006"
+	format2 = "02/01/2006"
+	format3 = "02-01-2006"
+	format4 = "02.01.06"
+	format5 = "02/01/06"
+	format6 = "02-01-06"
+	format7 = "02,01,2006"
+	format8 = "02,01,06"
 )
 
 func AddOperation(dataBase *db.Database, win fyne.Window) *fyne.Container {
@@ -31,31 +44,45 @@ func AddOperation(dataBase *db.Database, win fyne.Window) *fyne.Container {
 	incomeEntry := widget.NewEntry()
 	spendEntry := widget.NewEntry()
 	dateIncomEntry := widget.NewEntryWithData(dateIncomeBind)
-	dateIncomEntry.SetPlaceHolder("01/01/2001")
+	dateIncomEntry.SetPlaceHolder(format1)
 	dateSpendEntry := widget.NewEntryWithData(dateSpendBind)
-	dateSpendEntry.SetPlaceHolder("01/01/2001")
+	dateSpendEntry.SetPlaceHolder(format1)
 	commentIncomEntry := widget.NewEntry()
 	commentSpendEntry := widget.NewEntry()
 
-	addBtn := widget.NewButton("Add", func() {
-		dataBase.AddIncome(checkEntry(incomeEntry.Text, dateIncomEntry.Text, win))
-		// Need uiniq ID or toml for Notification
-		fyne.CurrentApp().SendNotification(fyne.NewNotification("Add success", "Income added"))
-		// clear entry fields
-		incomeEntry.Text = ""
-		dateIncomEntry.Text = ""
-		incomeEntry.Refresh()
-		dateIncomEntry.Refresh()
+	addBtn := widget.NewButton("Add Income", func() {
+		income, date, err := checkEntry(incomeEntry.Text, dateIncomEntry.Text)
+		if err == nil {
+			dataBase.AddIncome(income, date)
+
+			// need to fix notifications (drivers or something)
+			fyne.CurrentApp().SendNotification(fyne.NewNotification("Add success", "Income added"))
+
+			// clearing entry fields
+			incomeEntry.Text = ""
+			dateIncomEntry.Text = ""
+			incomeEntry.Refresh()
+			dateIncomEntry.Refresh()
+		} else {
+			dialog.ShowError(err, win)
+		}
 	})
-	subBtn := widget.NewButton("Sub", func() {
-		dataBase.AddSpend(checkEntry(spendEntry.Text, dateSpendEntry.Text, win))
-		// Need uiniq ID or toml for Notification
-		fyne.CurrentApp().SendNotification(fyne.NewNotification("Sub success", "Spend added"))
-		// clear entry fields
-		spendEntry.Text = ""
-		dateSpendEntry.Text = ""
-		spendEntry.Refresh()
-		dateSpendEntry.Refresh()
+	subBtn := widget.NewButton("Add Spend", func() {
+		income, date, err := checkEntry(incomeEntry.Text, dateIncomEntry.Text)
+		if err == nil {
+			dataBase.AddSpend(income, date)
+
+			// need to fix notifications (drivers or something)
+			fyne.CurrentApp().SendNotification(fyne.NewNotification("Add success", "Income added"))
+
+			// clearing entry fields
+			incomeEntry.Text = ""
+			dateIncomEntry.Text = ""
+			incomeEntry.Refresh()
+			dateIncomEntry.Refresh()
+		} else {
+			dialog.ShowError(err, win)
+		}
 	})
 
 	calendarBtn1 := CalendarBtn(dateIncomeBind, win)
@@ -72,28 +99,55 @@ func AddOperation(dataBase *db.Database, win fyne.Window) *fyne.Container {
 	return c
 }
 
-func checkEntry(income string, date string, win fyne.Window) (float32, string) {
-	var inc float64
-	var dat string
-	var err error
-	if income != "" {
-		inc, err = strconv.ParseFloat(income, 32)
+func checkEntry(sumStr string, dateStr string) (float32, time.Time, error) {
+	if sumStr != "" {
+		sum, err := strconv.ParseFloat(sumStr, 32)
 		if err != nil {
-			dialog.ShowError(errors.New("Income format error"), win)
+			return 0, time.Time{}, errors.New("Sum format error")
 		}
-		// add regexpr for different date format input (31.01.2001 31/01/2001 31-01-2001 31-01-01)
-		if date == "" {
-			d := time.Now()
-			dat = d.Format("02.01.2006")
+
+		var date time.Time
+		if dateStr == "" {
+			date = time.Now() // if no manual or calendar input then set today
 		} else {
-			d, err2 := time.Parse("02.01.2006", date)
+			temp, err2 := checkDate(dateStr)
 			if err2 != nil {
-				dialog.ShowError(errors.New("Date format error"), win)
+				return 0, date, err2
+			} else {
+				date = temp
 			}
-			dat = d.Format("02.01.2006")
 		}
+		return float32(math.Abs(sum)), date, nil
 	} else {
-		dialog.ShowError(errors.New("Income must contain a value"), win)
+		return 0, time.Time{}, errors.New("Income must contain a value")
 	}
-	return float32(inc), dat
+}
+
+func checkDate(date string) (time.Time, error) {
+
+	var t time.Time
+	var err error
+
+	// try to change on switch
+	if t, err = time.Parse(format1, date); err == nil {
+		return t, nil
+	} else if t, err = time.Parse(format1, date); err == nil {
+		return t, nil
+	} else if t, err = time.Parse(format2, date); err == nil {
+		return t, nil
+	} else if t, err = time.Parse(format3, date); err == nil {
+		return t, nil
+	} else if t, err = time.Parse(format4, date); err == nil {
+		return t, nil
+	} else if t, err = time.Parse(format5, date); err == nil {
+		return t, nil
+	} else if t, err = time.Parse(format6, date); err == nil {
+		return t, nil
+	} else if t, err = time.Parse(format7, date); err == nil {
+		return t, nil
+	} else if t, err = time.Parse(format8, date); err == nil {
+		return t, nil
+	} else {
+		return t, err
+	}
 }

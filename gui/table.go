@@ -2,6 +2,7 @@ package gui
 
 import (
 	"accounter/db"
+	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -14,11 +15,11 @@ const (
 	height = 35
 )
 
-func MakeTable( dataBase *db.Database) fyne.CanvasObject {
+func MakeTable(dateFrom time.Time, dateTo time.Time, dataBase *db.Database) fyne.CanvasObject {
 	tableWithHead := container.NewWithoutLayout()
 	tableWithHead.Add(tableHeader())
 
-	data := dataBase.CalculateRecords("", "")
+	data := dataBase.CalculateRecords(dateFrom, dateFrom)
 	table := widget.NewTable(
 		func() (int, int) {
 			return len(data), 5
