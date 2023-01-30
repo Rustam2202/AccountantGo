@@ -29,7 +29,10 @@ type Records struct {
 	Records []Record
 }
 
-const TableName = "accounter"
+const (
+	TableName     = "accounter"
+	sqlDateFormat = "2006-01-02"
+)
 
 func (db *Database) CreateDataBase(name string) {
 	var err error
@@ -82,12 +85,9 @@ func (db *Database) AddIncome(income float32, date time.Time) {
 		panic(err)
 	}
 
-	//t, err := time.Parse("02.01.2006", date)
-	//dateToDB := t.Format("2006-01-02")
-
 	query := fmt.Sprintf(
 		`INSERT INTO %s (income, date) VALUES (%f, "%s")`,
-		TableName, income, "")
+		TableName, income, date.Format(sqlDateFormat))
 	statement, err := db.dataBase.Prepare(query)
 	if err != nil {
 		panic(err)
@@ -116,9 +116,9 @@ func (db *Database) CalculateRecords(dateFrom time.Time, dateTo time.Time) [][co
 		fmt.Println(err)
 		panic(err)
 	}
-	query := fmt.Sprintf(`SELECT * FROM %s.%s`,
-		db.name, TableName,
-	// date_from, date_to,
+
+	query := fmt.Sprintf(`SELECT * FROM %s.%s WHERE date >= '%s' AND date <= '%s'`,
+		db.name, TableName, dateFrom.Format(sqlDateFormat), dateTo.Format(sqlDateFormat),
 	)
 	rows, err := db.dataBase.Query(query)
 	if err != nil {
@@ -128,7 +128,7 @@ func (db *Database) CalculateRecords(dateFrom time.Time, dateTo time.Time) [][co
 	result := [][colNumb]string{}
 	for rows.Next() {
 		var id *int
-		var date *string // time.Time
+		var date *string
 		var income, spend *float32
 		var comment *string
 		err := rows.Scan(&id, &income, &spend, &date, &comment)
@@ -139,7 +139,11 @@ func (db *Database) CalculateRecords(dateFrom time.Time, dateTo time.Time) [][co
 		// [0]=id, [1]=date, [2]=income, [3]=spend, [4]=comment; id and date is NOL NULL
 		var record [colNumb]string
 		record[0] = strconv.Itoa(*id)
-		record[1] = *date
+		d, err := time.Parse(sqlDateFormat, *date)
+		if err != nil {
+			panic(err)
+		}
+		record[1] = time.Time.Format(d, "02.01.2006")
 		if income != nil {
 			record[2] = fmt.Sprintf("%0.2f", *income)
 		}

@@ -21,6 +21,7 @@ func MakeTable(dateFrom time.Time, dateTo time.Time, dataBase *db.Database) fyne
 	tableWithHead.Add(tableHeader())
 
 	data := dataBase.CalculateRecords(dateFrom, dateFrom)
+	
 	table := widget.NewTable(
 		func() (int, int) {
 			return len(data), 5
