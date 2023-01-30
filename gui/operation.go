@@ -42,7 +42,9 @@ func AddOperation(dataBase *db.Database, win fyne.Window) *fyne.Container {
 	dateSpendBind := binding.BindString(nil)
 
 	incomeEntry := widget.NewEntry()
+	incomeEntry.SetPlaceHolder("Enter Income")
 	spendEntry := widget.NewEntry()
+	spendEntry.SetPlaceHolder("Enter Spend")
 	dateIncomEntry := widget.NewEntryWithData(dateIncomeBind)
 	dateIncomEntry.SetPlaceHolder(format1)
 	dateSpendEntry := widget.NewEntryWithData(dateSpendBind)
@@ -50,77 +52,80 @@ func AddOperation(dataBase *db.Database, win fyne.Window) *fyne.Container {
 	commentIncomEntry := widget.NewEntry()
 	commentSpendEntry := widget.NewEntry()
 
-	addBtn := widget.NewButton("Add Income", func() {
-		income, date, err := checkEntry(incomeEntry.Text, dateIncomEntry.Text)
-		if err == nil {
-			dataBase.AddIncome(income, date)
-
-			// need to fix notifications (drivers or something)
-			fyne.CurrentApp().SendNotification(fyne.NewNotification("Add success", "Income added"))
-
-			// clearing entry fields
-			incomeEntry.Text = ""
-			dateIncomEntry.Text = ""
-			incomeEntry.Refresh()
-			dateIncomEntry.Refresh()
-		} else {
-			dialog.ShowError(err, win)
+	addBtn := widget.NewButton("Add record", func() {
+		if !(incomeEntry.Text != "" || spendEntry.Text != "") {
+			dialog.ShowError(errors.New("Income or Spend field must contain a value"), win)
+			return
 		}
-	})
-	subBtn := widget.NewButton("Add Spend", func() {
-		income, date, err := checkEntry(incomeEntry.Text, dateIncomEntry.Text)
-		if err == nil {
-			dataBase.AddSpend(income, date)
 
-			// need to fix notifications (drivers or something)
-			fyne.CurrentApp().SendNotification(fyne.NewNotification("Add success", "Income added"))
-
-			// clearing entry fields
-			incomeEntry.Text = ""
-			dateIncomEntry.Text = ""
-			incomeEntry.Refresh()
-			dateIncomEntry.Refresh()
-		} else {
-			dialog.ShowError(err, win)
+		var income, spend float32
+		var dateInc, dateSpn time.Time
+		var errInc, errSpn error
+		if incomeEntry.Text != "" {
+			income, dateInc, errInc = checkEntry(incomeEntry.Text, dateIncomEntry.Text)
+			if errInc != nil {
+				dialog.ShowError(errInc, win)
+				return
+			}
+			dataBase.AddIncome(income, dateInc)
 		}
+		if spendEntry.Text != "" {
+			spend, dateSpn, errSpn = checkEntry(spendEntry.Text, dateSpendEntry.Text)
+			if errSpn != nil {
+				dialog.ShowError(errSpn, win)
+				return
+			}
+			dataBase.AddSpend(spend, dateSpn)
+		}
+
+		// need to fix notifications (drivers or something)
+		fyne.CurrentApp().SendNotification(fyne.NewNotification("Add success", "Income added"))
+
+		// clearing entry fields
+		incomeEntry.Text = ""
+		dateIncomEntry.Text = ""
+		spendEntry.Text = ""
+		dateSpendEntry.Text = ""
+		incomeEntry.Refresh()
+		dateIncomEntry.Refresh()
+		spendEntry.Refresh()
+		dateSpendEntry.Refresh()
 	})
 
 	calendarBtn1 := CalendarBtn(dateIncomeBind, win)
 	calendarBtn2 := CalendarBtn(dateSpendBind, win)
 
-	c := container.NewVBox(
+	return container.NewVBox(
 		enterOperLabel,
-		container.NewGridWithColumns(6,
-			emptyLabel, sumLabel, dateLabel, emptyLabel, commentLabel, emptyLabel,
-			incomeLabel, incomeEntry, dateIncomEntry, calendarBtn1, commentIncomEntry, addBtn,
-			spendLabel, spendEntry, dateSpendEntry, calendarBtn2, commentSpendEntry, subBtn,
-		),
+		container.NewHBox(
+			container.NewGridWithColumns(4,
+				incomeEntry, dateIncomEntry, calendarBtn1, commentIncomEntry,
+				spendEntry, dateSpendEntry, calendarBtn2, commentSpendEntry,
+			),
+			addBtn),
 	)
-	return c
 }
 
 func checkEntry(sumStr string, dateStr string) (float32, time.Time, error) {
-	if sumStr != "" {
-		sum, err := strconv.ParseFloat(sumStr, 32)
-		if err != nil {
-			return 0, time.Time{}, errors.New("Sum format error")
-		}
 
-		var date time.Time
-		if dateStr == "" {
-			date = time.Now() // if no manual or calendar input then set today
-		} else {
-			temp, err2 := checkDate(dateStr)
-			if err2 != nil {
-				return 0, date, err2
-			} else {
-				date = temp
-			}
-		}
-		return float32(math.Abs(sum)), date, nil
-	} else {
-		return 0, time.Time{}, errors.New("Income must contain a value")
+	sum, err := strconv.ParseFloat(sumStr, 32)
+	if err != nil {
+		return 0, time.Time{}, errors.New("Sum format error")
 	}
+
+	var date time.Time
+	if dateStr == "" {
+		date = time.Now() // if no manual or calendar input then set today
+	} else {
+		temp, err2 := checkDate(dateStr)
+		if err2 != nil {
+			return 0, date, err2
+		} else {
+			date = temp
+		}
+	}
+	return float32(math.Abs(sum)), date, nil
+
 }
 
 func checkDate(date string) (time.Time, error) {

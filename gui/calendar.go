@@ -41,7 +41,7 @@ func CalendarBtn(date binding.String, win fyne.Window) *fyne.Container {
 	icon := calenIcon()
 
 	c := container.NewVBox(
-		widget.NewButtonWithIcon("Calendar", icon, func() {
+		widget.NewButtonWithIcon("    Calendar    ", icon, func() {
 			dialog.NewCustomConfirm(
 				"Choose a date",
 				"OK",

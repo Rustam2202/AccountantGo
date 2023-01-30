@@ -31,9 +31,9 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 	dateFromBind := binding.BindString(nil)
 	dateToBind := binding.BindString(nil)
 	dateFromEntry := widget.NewEntryWithData(dateFromBind)
-	dateFromEntry.SetPlaceHolder("01/01/2001")
+	dateFromEntry.SetPlaceHolder(format1)
 	dateToEntry := widget.NewEntryWithData(dateToBind)
-	dateToEntry.SetPlaceHolder("01/01/2001")
+	dateToEntry.SetPlaceHolder(format1)
 	monthEntry := widget.NewSelect(months, func(s string) {})
 	yearEntry := widget.NewSelectEntry(years())
 
@@ -41,11 +41,9 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 	toBtn := CalendarBtn(dateToBind, win)
 
 	confirmBtn := widget.NewButton("Show", func() {
-		
 
-
-	//	table := MakeTable( dataBase)
-	//	cont.AddObject(table)
+		//	table := MakeTable( dataBase)
+		//	cont.AddObject(table)
 		cont.Show()
 	})
 
