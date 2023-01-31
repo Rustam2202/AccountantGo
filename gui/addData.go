@@ -63,33 +63,15 @@ func AddOperation(dataBase *db.Database, win fyne.Window) *fyne.Container {
 			return
 		}
 		if income != 0 && spend != 0 && utils.DatesCompare(dateInc, dateSpn) {
-			dataBase.AddIncomeAndSpend(income, spend, dateInc)
+			dataBase.AddIncomeAndSpend(income, spend, dateInc, commentIncomEntry.Text, commentSpendEntry.Text)
 		} else { // income and spend can be both no zero but with different dates
 			if income != 0 {
-				dataBase.AddIncome(income, dateInc)
+				dataBase.AddIncome(income, dateInc, commentIncomEntry.Text)
 			}
 			if spend != 0 {
-				dataBase.AddSpend(spend, dateSpn)
+				dataBase.AddSpend(spend, dateSpn, commentSpendEntry.Text)
 			}
 		}
-		/*
-			if incomeEntry.Text != "" {
-				income, dateInc, errInc = utils.CheckEntry(incomeEntry.Text, dateIncomEntry.Text)
-				if errInc != nil {
-					dialog.ShowError(errInc, win)
-					return
-				}
-				dataBase.AddIncome(income, dateInc)
-			}
-			if spendEntry.Text != "" {
-				spend, dateSpn, errSpn = utils.CheckEntry(spendEntry.Text, dateSpendEntry.Text)
-				if errSpn != nil {
-					dialog.ShowError(errSpn, win)
-					return
-				}
-				dataBase.AddSpend(spend, dateSpn)
-			}
-		*/
 
 		// need to fix notifications (drivers or something)
 		fyne.CurrentApp().SendNotification(fyne.NewNotification("Add success", "Income added"))

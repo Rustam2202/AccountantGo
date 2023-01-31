@@ -23,11 +23,11 @@ func main() {
 		DataBase.CreateDataBase("tutelka")
 	}
 
-	//makeData()
+	// makeData()
 
 	a := app.New()
 	w := a.NewWindow("Accounter Manager")
-	w.Resize(fyne.NewSize(400, 700))
+	w.Resize(fyne.NewSize(900, 800))
 
 	ContWithTable := container.NewWithoutLayout()
 	bottom := widget.NewLabel("bottom")
@@ -63,13 +63,14 @@ func makeData() {
 		data[i].date = time.Unix(rand.Int63n(delta)+minDate, 0)
 		data[i].addType = rand.Intn(3)
 	}
+	someComment := "Some comment for all"
 	for _, d := range data {
 		if d.addType == 0 {
-			DataBase.AddIncome(d.sum, d.date)
+			DataBase.AddIncome(d.sum, d.date, someComment)
 		} else if d.addType == 1 {
-			DataBase.AddSpend(d.sum, d.date)
+			DataBase.AddSpend(d.sum, d.date, someComment)
 		} else {
-			DataBase.AddIncomeAndSpend(d.sum, (rand.Float32()-0.5)*koef, d.date)
+			DataBase.AddIncomeAndSpend(d.sum, (rand.Float32()-0.5)*koef, d.date, someComment, someComment)
 		}
 	}
 }

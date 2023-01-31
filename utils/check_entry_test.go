@@ -58,7 +58,7 @@ func TestDate(t *testing.T) {
 
 func TestEntry(t *testing.T) {
 	for _, test := range entries {
-		sum, date, err := CheckEntry(test.inputSum, test.inputDate)
+		sum, date, _ := CheckEntry(test.inputSum, test.inputDate)
 		if sum != test.expectedSum {
 			t.Errorf("Expexted: %f, got: %f", test.expectedSum, sum)
 		}
@@ -66,11 +66,9 @@ func TestEntry(t *testing.T) {
 			t.Errorf("Expected: %q, got: %q", test.expectedDate, date)
 		}
 		/*
-		if !errors.Is(err,test.err) {
-			t.Errorf("Expected: %q, got: %q", test.err, err)
-		}
+			if !errors.Is(err,test.err) {
+				t.Errorf("Expected: %q, got: %q", test.err, err)
+			}
 		*/
 	}
 }
-
-

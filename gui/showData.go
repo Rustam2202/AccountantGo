@@ -121,7 +121,7 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 		cont.RemoveAll()
 		cont.Add(table)
 		cont.Show()
-	
+
 	})
 	showAllBtn := widget.NewButton("Show all", func() {
 		dateFrom := time.Date(2020, 1, 1, 0, 0, 0, 0, &time.Location{})
@@ -149,7 +149,7 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 				yearOfMonthlyReportEntry, empty,
 			),
 		),
-		container.NewGridWithColumns(4, showPeriodBtn, showMonthBtn, showYearBtn, showAllBtn),
+		container.NewGridWithColumns(4, showAllBtn, showPeriodBtn, showMonthBtn, showYearBtn),
 	)
 }
 

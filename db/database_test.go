@@ -36,14 +36,14 @@ func TestCreateDB(t *testing.T) {
 func Test1(t *testing.T) {
 	var DataBase Database
 	DataBase.CreateDataBase("test_1")
-	DataBase.AddSpend(test1Inputs[0].sum, test1Inputs[0].date)
-	DataBase.AddIncome(test1Inputs[1].sum, test1Inputs[1].date)
-	DataBase.AddIncome(test1Inputs[2].sum, test1Inputs[2].date)
-	DataBase.AddIncome(test1Inputs[3].sum, test1Inputs[3].date)
-	DataBase.AddSpend(test1Inputs[4].sum, test1Inputs[4].date)
-	DataBase.AddIncome(test1Inputs[5].sum, test1Inputs[5].date)
-	DataBase.AddSpend(test1Inputs[6].sum, test1Inputs[6].date)
-	DataBase.AddIncome(test1Inputs[7].sum, test1Inputs[7].date)
+	DataBase.AddSpend(test1Inputs[0].sum, test1Inputs[0].date,"text")
+	DataBase.AddIncome(test1Inputs[1].sum, test1Inputs[1].date, "loooooooooooooooooong text")
+	DataBase.AddIncome(test1Inputs[2].sum, test1Inputs[2].date,"")
+	DataBase.AddIncome(test1Inputs[3].sum, test1Inputs[3].date, "")
+	DataBase.AddSpend(test1Inputs[4].sum, test1Inputs[4].date,"")
+	DataBase.AddIncome(test1Inputs[5].sum, test1Inputs[5].date,"")
+	DataBase.AddSpend(test1Inputs[6].sum, test1Inputs[6].date,"")
+	DataBase.AddIncome(test1Inputs[7].sum, test1Inputs[7].date,"")
 	result, err := DataBase.CalculateRecords(
 		time.Date(2023, time.January, 26, 0, 0, 0, 0, &time.Location{}),    // 1...
 		time.Date(2023, time.January, 29, 23, 59, 59, 0, &time.Location{}), // ...6

@@ -10,10 +10,10 @@ import (
 )
 
 const (
-	no         = 40
+	idWidth    = 40
 	width      = 150
 	height     = 35
-	tableWidth = 700
+	tableWidth = 850
 )
 
 func MakeTable(dateFrom time.Time, dateTo time.Time, dataBase *db.Database) (fyne.CanvasObject, error) {
@@ -52,14 +52,18 @@ func MakeTable(dateFrom time.Time, dateTo time.Time, dataBase *db.Database) (fyn
 			}
 		})
 
-	table.Resize(fyne.Size{tableWidth, 400})
+	table.Resize(fyne.Size{Width: tableWidth, Height: 400})
 	table.Move(fyne.NewPos(0, 60))
-	table.SetColumnWidth(0, no)
+	table.SetColumnWidth(0, idWidth)
 	table.SetColumnWidth(1, width)
 	table.SetColumnWidth(2, width)
 	table.SetColumnWidth(3, width)
 	table.SetColumnWidth(4, width)
-	table.SetRowHeight(0, height)
+	for i := 0; i < len(data); i++ {
+		if data[i][2] != "" && data[i][3] != "" {
+			table.SetRowHeight(i, height*2)
+		}
+	}
 	tableWithHead.Add(table)
 	return tableWithHead, nil
 }
@@ -90,8 +94,8 @@ func tableHeader() *widget.Table {
 			}
 		},
 	)
-	tableHeader.Resize(fyne.Size{tableWidth, height})
-	tableHeader.SetColumnWidth(0, no)
+	tableHeader.Resize(fyne.Size{Width: tableWidth, Height: height})
+	tableHeader.SetColumnWidth(0, idWidth)
 	tableHeader.SetColumnWidth(1, width)
 	tableHeader.SetColumnWidth(2, width)
 	tableHeader.SetColumnWidth(3, width)
