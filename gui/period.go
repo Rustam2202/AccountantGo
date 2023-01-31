@@ -3,6 +3,7 @@ package gui
 import (
 	"accounter/db"
 	"accounter/utils"
+	"errors"
 
 	"strconv"
 	"time"
@@ -28,10 +29,10 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 	fromLabel.Alignment = fyne.TextAlignTrailing
 	toLabel := widget.NewLabel("Period end:")
 	toLabel.Alignment = fyne.TextAlignTrailing
-	monthLabel := widget.NewLabel("Report for month:")
-	monthLabel.Alignment = fyne.TextAlignTrailing
-	yearLabel := widget.NewLabel("Report for year:")
-	yearLabel.Alignment = fyne.TextAlignTrailing
+	monthOfMonthlyReportLabel := widget.NewLabel("Report for month:")
+	monthOfMonthlyReportLabel.Alignment = fyne.TextAlignTrailing
+	yearOfMonthlyReportLabel := widget.NewLabel("Report for year:")
+	yearOfMonthlyReportLabel.Alignment = fyne.TextAlignTrailing
 
 	dateFromBind := binding.BindString(nil)
 	dateToBind := binding.BindString(nil)
@@ -39,27 +40,99 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 	dateFromEntry.SetPlaceHolder(utils.Format1)
 	dateToEntry := widget.NewEntryWithData(dateToBind)
 	dateToEntry.SetPlaceHolder(utils.Format1)
-	monthEntry := widget.NewSelect(months, func(s string) {})
-	yearOfMonth := widget.NewSelectEntry(years())
-	yearEntry := widget.NewSelectEntry(years())
+	monthOfMonthlyReportEntry := widget.NewSelect(months, func(s string) {})
+	yearOfMonthlyReportEntry := widget.NewSelectEntry(years())
+	yearOfAnnualReportEntry := widget.NewSelectEntry(years())
 
 	fromBtn := CalendarBtn(dateFromBind, win)
 	toBtn := CalendarBtn(dateToBind, win)
 
-	confirmBtn := widget.NewButton("Show", func() {
+	showPeriodBtn := widget.NewButton("Show period", func() {
+
+		if dateFromEntry.Text == "" {
+			dialog.ShowError(errors.New("Need enter period or month"), win)
+			return
+		}
 		dateFrom, err := utils.CheckDate(dateFromEntry.Text)
 		dateTo, err := utils.CheckDate(dateToEntry.Text)
-
 		if err != nil {
 			dialog.ShowError(err, win)
 			return
 		}
+		table, err := MakeTable(dateFrom, dateTo, dataBase)
+		if err != nil {
+			dialog.ShowError(err, win)
+			return
+		}
+		cont.RemoveAll()
+		cont.Add(table)
+		cont.Show()
+	})
+	showMonthBtn := widget.NewButton("Show month", func() {
+		if monthOfMonthlyReportEntry.Selected == "" || yearOfMonthlyReportEntry.Text == "" {
+			dialog.ShowError(errors.New("To Show need enter month and year"), win)
+			return
+		}
+		month := time.Month(monthOfMonthlyReportEntry.SelectedIndex() + 1)
+		year, err := strconv.Atoi(yearOfMonthlyReportEntry.Text)
+		if err != nil {
+			dialog.ShowError(errors.New("Year incorrect"), win)
+			return
+		}
+
+		dateFrom := time.Date(year, month, 1, 0, 0, 0, 0, &time.Location{})
+		dateTo := time.Date(year, month, 31, 0, 0, 0, 0, &time.Location{})
+
+		//	dateFrom, err := utils.CheckDate(fmt.Sprintf("01.%d.%d", month, year))
+		//	dateTo, err := utils.CheckDate(dateToEntry.Text)
+		//	if err != nil {
+		//		dialog.ShowError(err, win)
+		//	return
+		//	}
 
 		table, err := MakeTable(dateFrom, dateTo, dataBase)
 		if err != nil {
 			dialog.ShowError(err, win)
 			return
 		}
+		cont.RemoveAll()
+		cont.Add(table)
+		cont.Show()
+	})
+	showYearBtn := widget.NewButton("Show year", func() {
+		if yearOfAnnualReportEntry.Text == "" {
+			dialog.ShowError(errors.New("To Show need enter year"), win)
+			return
+		}
+		year, err := strconv.Atoi(yearOfAnnualReportEntry.Text)
+		if err != nil {
+			dialog.ShowError(errors.New("Year incorrect"), win)
+			return
+		}
+
+		dateFrom := time.Date(year, 1, 1, 0, 0, 0, 0, &time.Location{})
+		dateTo := time.Date(year, 12, 31, 0, 0, 0, 0, &time.Location{})
+
+		table, err := MakeTable(dateFrom, dateTo, dataBase)
+		if err != nil {
+			dialog.ShowError(err, win)
+			return
+		}
+		cont.RemoveAll()
+		cont.Add(table)
+		cont.Show()
+	
+	})
+	showAllBtn := widget.NewButton("Show all", func() {
+		dateFrom := time.Date(2020, 1, 1, 0, 0, 0, 0, &time.Location{})
+		dateTo := time.Now()
+
+		table, err := MakeTable(dateFrom, dateTo, dataBase)
+		if err != nil {
+			dialog.ShowError(err, win)
+			return
+		}
+		cont.RemoveAll()
 		cont.Add(table)
 		cont.Show()
 	})
@@ -68,15 +141,15 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 		labelPeriod,
 		container.NewHBox(
 			container.NewGridWithColumns(4,
-				fromLabel, dateFromEntry, fromBtn, monthLabel,
-				toLabel, dateToEntry, toBtn, yearLabel,
+				fromLabel, dateFromEntry, fromBtn, monthOfMonthlyReportLabel,
+				toLabel, dateToEntry, toBtn, yearOfMonthlyReportLabel,
 			),
 			container.NewGridWithRows(2,
-				monthEntry, yearOfMonth,
-				yearEntry, empty,
+				monthOfMonthlyReportEntry, yearOfAnnualReportEntry,
+				yearOfMonthlyReportEntry, empty,
 			),
 		),
-		confirmBtn,
+		container.NewGridWithColumns(4, showPeriodBtn, showMonthBtn, showYearBtn, showAllBtn),
 	)
 }
 

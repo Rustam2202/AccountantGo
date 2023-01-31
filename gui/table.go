@@ -13,12 +13,12 @@ const (
 	no         = 40
 	width      = 150
 	height     = 35
-	tableWidth = 600
+	tableWidth = 700
 )
 
 func MakeTable(dateFrom time.Time, dateTo time.Time, dataBase *db.Database) (fyne.CanvasObject, error) {
 
-	data, err := dataBase.CalculateRecords(dateFrom, dateFrom)
+	data, err := dataBase.CalculateRecords(dateFrom, dateTo)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func MakeTable(dateFrom time.Time, dateTo time.Time, dataBase *db.Database) (fyn
 			}
 		})
 
-	table.Resize(fyne.Size{tableWidth, 300})
+	table.Resize(fyne.Size{tableWidth, 400})
 	table.Move(fyne.NewPos(0, 60))
 	table.SetColumnWidth(0, no)
 	table.SetColumnWidth(1, width)

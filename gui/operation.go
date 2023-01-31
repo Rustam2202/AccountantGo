@@ -52,22 +52,44 @@ func AddOperation(dataBase *db.Database, win fyne.Window) *fyne.Container {
 		var income, spend float32
 		var dateInc, dateSpn time.Time
 		var errInc, errSpn error
-		if incomeEntry.Text != "" {
-			income, dateInc, errInc = utils.CheckEntry(incomeEntry.Text, dateIncomEntry.Text)
-			if errInc != nil {
-				dialog.ShowError(errInc, win)
-				return
-			}
-			dataBase.AddIncome(income, dateInc)
+		income, dateInc, errInc = utils.CheckEntry(incomeEntry.Text, dateIncomEntry.Text)
+		if errInc != nil {
+			dialog.ShowError(errInc, win)
+			return
 		}
-		if spendEntry.Text != "" {
-			spend, dateSpn, errSpn = utils.CheckEntry(spendEntry.Text, dateSpendEntry.Text)
-			if errSpn != nil {
-				dialog.ShowError(errSpn, win)
-				return
-			}
-			dataBase.AddSpend(spend, dateSpn)
+		spend, dateSpn, errSpn = utils.CheckEntry(spendEntry.Text, dateSpendEntry.Text)
+		if errSpn != nil {
+			dialog.ShowError(errSpn, win)
+			return
 		}
+		if income != 0 && spend != 0 && utils.DatesCompare(dateInc, dateSpn) {
+			dataBase.AddIncomeAndSpend(income, spend, dateInc)
+		} else { // income and spend can be both no zero but with different dates
+			if income != 0 {
+				dataBase.AddIncome(income, dateInc)
+			}
+			if spend != 0 {
+				dataBase.AddSpend(spend, dateSpn)
+			}
+		}
+		/*
+			if incomeEntry.Text != "" {
+				income, dateInc, errInc = utils.CheckEntry(incomeEntry.Text, dateIncomEntry.Text)
+				if errInc != nil {
+					dialog.ShowError(errInc, win)
+					return
+				}
+				dataBase.AddIncome(income, dateInc)
+			}
+			if spendEntry.Text != "" {
+				spend, dateSpn, errSpn = utils.CheckEntry(spendEntry.Text, dateSpendEntry.Text)
+				if errSpn != nil {
+					dialog.ShowError(errSpn, win)
+					return
+				}
+				dataBase.AddSpend(spend, dateSpn)
+			}
+		*/
 
 		// need to fix notifications (drivers or something)
 		fyne.CurrentApp().SendNotification(fyne.NewNotification("Add success", "Income added"))

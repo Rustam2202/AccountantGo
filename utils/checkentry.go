@@ -42,11 +42,13 @@ func CheckEntry(sumStr string, dateStr string) (float32, time.Time, error) {
 }
 
 func CheckDate(date string) (time.Time, error) {
-
+	if date == "" {
+		return time.Now(), nil
+	}
 	var t time.Time
 	var err error
 
-	// try to change on switch
+	// try change on switch
 	if t, err = time.Parse(Format1, date); err == nil {
 		return t, nil
 	} else if t, err = time.Parse(Format1, date); err == nil {
@@ -71,6 +73,6 @@ func CheckDate(date string) (time.Time, error) {
 }
 
 func DatesCompare(first, second time.Time) bool {
-	// if dates equal then true
+	// if aboth false then them equal => true
 	return !(first.After(second) && first.Before(second))
 }

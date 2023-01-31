@@ -10,7 +10,7 @@ import (
 )
 
 type Database struct {
-	name     string
+	Name     string
 	dataBase *sql.DB
 }
 
@@ -63,7 +63,7 @@ func (db *Database) CreateDataBase(name string) error {
 	if err != nil {
 		return err
 	}
-	db.name = name
+	db.Name = name
 	return nil
 }
 
@@ -84,8 +84,24 @@ func (db *Database) GetDataBase() *Database {
 	return db
 }
 
+func (db *Database) AddIncomeAndSpend(income float32, spend float32, date time.Time) error {
+	if err := db.OpenDataBase(db.Name); err != nil {
+		return err
+	}
+	query := fmt.Sprintf(`INSERT INTO %s (income, spend, date) VALUES (%f, %f, '%s')`,
+		TableName, income, spend, date.Format(sqlDateFormat))
+
+	statement, err := db.dataBase.Prepare(query)
+	if err != nil {
+		return err
+	}
+	//defer db.dataBase.Close()
+	statement.Exec()
+	return nil
+}
+
 func (db *Database) AddIncome(income float32, date time.Time) error {
-	if err := db.OpenDataBase(db.name); err != nil {
+	if err := db.OpenDataBase(db.Name); err != nil {
 		return err
 	}
 
@@ -101,7 +117,7 @@ func (db *Database) AddIncome(income float32, date time.Time) error {
 }
 
 func (db *Database) AddSpend(spend float32, date time.Time) error {
-	if err := db.OpenDataBase(db.name); err != nil {
+	if err := db.OpenDataBase(db.Name); err != nil {
 		return err
 	}
 
@@ -117,11 +133,11 @@ func (db *Database) AddSpend(spend float32, date time.Time) error {
 }
 
 func (db *Database) CalculateRecords(dateFrom time.Time, dateTo time.Time) ([][colNumb]string, error) {
-	if err := db.OpenDataBase(db.name); err != nil {
+	if err := db.OpenDataBase(db.Name); err != nil {
 		return nil, err
 	}
 	query := fmt.Sprintf(`SELECT * FROM %s.%s WHERE date >= '%s' AND date <= '%s'`,
-		db.name, TableName, dateFrom.Format(sqlDateFormat), dateTo.Format(sqlDateFormat),
+		db.Name, TableName, dateFrom.Format(sqlDateFormat), dateTo.Format(sqlDateFormat),
 	)
 	rows, err := db.dataBase.Query(query)
 	if err != nil {
@@ -141,7 +157,7 @@ func (db *Database) CalculateRecords(dateFrom time.Time, dateTo time.Time) ([][c
 
 		// [0]=id, [1]=date, [2]=income, [3]=spend, [4]=comment; id and date is NOL NULL
 		var record [colNumb]string
-		record[0] = strconv.Itoa(*id-1)
+		record[0] = strconv.Itoa(*id - 1)
 		d, err := time.Parse(sqlDateFormat, *date)
 		if err != nil {
 			panic(err)
