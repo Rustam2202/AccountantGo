@@ -141,7 +141,7 @@ func (db *Database) CalculateRecords(dateFrom time.Time, dateTo time.Time) ([][c
 
 		// [0]=id, [1]=date, [2]=income, [3]=spend, [4]=comment; id and date is NOL NULL
 		var record [colNumb]string
-		record[0] = strconv.Itoa(*id)
+		record[0] = strconv.Itoa(*id-1)
 		d, err := time.Parse(sqlDateFormat, *date)
 		if err != nil {
 			panic(err)

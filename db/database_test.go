@@ -56,7 +56,7 @@ func Test1(t *testing.T) {
 		income, _ := strconv.ParseFloat(result[i][2], 32)
 		spend, _ := strconv.ParseFloat(result[i][3], 32)
 		if !(math.Abs(float64(test1Inputs[i+1].sum)-income-spend) <= 10e-3) {
-			t.Errorf("Expected: %f, got: +%0.f -%f", test1Inputs[i].sum, income, spend)
+			t.Errorf("Expected: %f, got: +%0.2f -%0.2f", test1Inputs[i].sum, income, spend)
 		}
 		if !utils.DatesCompare(test1Inputs[i+1].date, date) {
 			t.Errorf("Expected: %q, got: %q", test1Inputs[i].date, date)
