@@ -38,7 +38,6 @@ func CheckEntry(sumStr string, dateStr string) (float32, time.Time, error) {
 		}
 	}
 	return float32(math.Abs(sum)), date, nil
-
 }
 
 func CheckDate(date string) (time.Time, error) {
