@@ -15,6 +15,12 @@ type Database struct {
 	dataBase *sql.DB
 }
 
+type CalculateResult struct {
+	Data       [][colNumb]string
+	AllIncomes float32
+	AllSpends  float32
+}
+
 const (
 	colNumb       = 5
 	TableName     = "accounter"
@@ -152,7 +158,7 @@ func (db *Database) DropTable() error {
 	return nil
 }
 
-func (db *Database) CalculateRecords(dateFrom time.Time, dateTo time.Time) ([][colNumb]string, error) {
+func (db *Database) CalculateRecords(dateFrom time.Time, dateTo time.Time) (CalculateResult, error) {
 	//	if err := db.OpenDataBase(db.Name); err != nil {
 	//		return nil, err
 	//	}
@@ -161,10 +167,12 @@ func (db *Database) CalculateRecords(dateFrom time.Time, dateTo time.Time) ([][c
 	)
 	rows, err := db.dataBase.Query(query)
 	if err != nil {
-		return nil, err
+		return CalculateResult{}, err
 	}
 
-	result := [][colNumb]string{}
+	result := CalculateResult{}
+	var allIncomes float32
+	var allSpends float32
 	for rows.Next() {
 		var id *int
 		var date *string
@@ -184,15 +192,19 @@ func (db *Database) CalculateRecords(dateFrom time.Time, dateTo time.Time) ([][c
 		}
 		record[1] = time.Time.Format(d, "02.01.2006")
 		if income != nil {
+			allIncomes += *income
 			record[2] = fmt.Sprintf("%0.2f", *income)
 		}
 		if spend != nil {
+			allSpends += *spend
 			record[3] = fmt.Sprintf("%0.2f", *spend)
 		}
 		if comment != nil {
 			record[4] = *comment
 		}
-		result = append(result, record)
+		result.Data = append(result.Data, record)
 	}
+	result.AllIncomes = allIncomes
+	result.AllSpends = allSpends
 	return result, nil
 }

@@ -4,11 +4,14 @@ import (
 	"accounter/db"
 	"accounter/utils"
 	"errors"
+	"fmt"
+	"image/color"
 
 	"strconv"
 	"time"
 
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/dialog"
@@ -33,6 +36,30 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 	monthOfMonthlyReportLabel.Alignment = fyne.TextAlignTrailing
 	yearOfMonthlyReportLabel := widget.NewLabel("Report for year:")
 	yearOfMonthlyReportLabel.Alignment = fyne.TextAlignTrailing
+	periodLabel := widget.NewLabel("Period:")
+	periodLabel.Alignment = fyne.TextAlignCenter
+	allIncomesLabel := widget.NewLabel("All incomes:")
+	allIncomesLabel.Alignment = fyne.TextAlignCenter
+	allSpendsLabel := widget.NewLabel("All spends:")
+	allSpendsLabel.Alignment = fyne.TextAlignCenter
+	totalValueLabel := widget.NewLabel("Total:")
+	totalValueLabel.Alignment = fyne.TextAlignCenter
+	period := widget.NewLabel("")
+	period.Alignment = fyne.TextAlignCenter
+
+	allIncomes := canvas.Text{}
+	allIncomes.Alignment = fyne.TextAlignCenter
+	allIncomes.Color = color.NRGBA{60, 179, 113, 255}
+	allIncomes.TextSize = 15
+
+	allSpends := canvas.Text{}
+	allSpends.Alignment = fyne.TextAlignCenter
+	allSpends.Color = color.NRGBA{255, 99, 71, 255}
+	allSpends.TextSize = 15
+
+	total := canvas.Text{}
+	total.Alignment = fyne.TextAlignCenter
+	total.TextSize = 15
 
 	dateFromBind := binding.BindString(nil)
 	dateToBind := binding.BindString(nil)
@@ -47,8 +74,13 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 	fromBtn := CalendarBtn(dateFromBind, win)
 	toBtn := CalendarBtn(dateToBind, win)
 
-	showPeriodBtn := widget.NewButton("Show period", func() {
+	totalResults := container.NewHBox(
+		periodLabel, period, allIncomesLabel, &allIncomes,
+		allSpendsLabel, &allSpends, totalValueLabel, &total,
+	)
+	totalResults.Hide()
 
+	showPeriodBtn := widget.NewButton("Show period", func() {
 		if dateFromEntry.Text == "" {
 			dialog.ShowError(errors.New("Need enter period or month"), win)
 			return
@@ -64,8 +96,15 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 			dialog.ShowError(err, win)
 			return
 		}
+
+		period.SetText(fmt.Sprintf("%s ... %s", dateFrom.String(), dateTo.String()))
+		allIncomes.Text = fmt.Sprintf("%0.2f", table.AllIncomes)
+		allSpends.Text = fmt.Sprintf("%0.2f", table.AllSpends)
+		total.Text = fmt.Sprintf("%0.2f", table.AllIncomes-table.AllSpends)
+		totalResults.Show()
+
 		cont.RemoveAll()
-		cont.Add(table)
+		cont.Add(table.Table)
 		cont.Show()
 	})
 	showMonthBtn := widget.NewButton("Show month", func() {
@@ -95,8 +134,15 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 			dialog.ShowError(err, win)
 			return
 		}
+
+		period.SetText(fmt.Sprintf("%s of %d", month.String(), year))
+		allIncomes.Text = fmt.Sprintf("%0.2f", table.AllIncomes)
+		allSpends.Text = fmt.Sprintf("%0.2f", table.AllSpends)
+		total.Text = fmt.Sprintf("%0.2f", table.AllIncomes-table.AllSpends)
+		totalResults.Show()
+
 		cont.RemoveAll()
-		cont.Add(table)
+		cont.Add(table.Table)
 		cont.Show()
 	})
 	showYearBtn := widget.NewButton("Show year", func() {
@@ -118,8 +164,15 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 			dialog.ShowError(err, win)
 			return
 		}
+
+		period.SetText(yearOfAnnualReportEntry.Text)
+		allIncomes.Text = fmt.Sprintf("%0.2f", table.AllIncomes)
+		allSpends.Text = fmt.Sprintf("%0.2f", table.AllSpends)
+		total.Text = fmt.Sprintf("%0.2f", table.AllIncomes-table.AllSpends)
+		totalResults.Show()
+
 		cont.RemoveAll()
-		cont.Add(table)
+		cont.Add(table.Table)
 		cont.Show()
 
 	})
@@ -132,8 +185,14 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 			dialog.ShowError(err, win)
 			return
 		}
+
+		period.SetText("All period")
+		allIncomes.Text = fmt.Sprintf("%0.2f", table.AllIncomes)
+		allSpends.Text = fmt.Sprintf("%0.2f", table.AllSpends)
+		total.Text = fmt.Sprintf("%0.2f", table.AllIncomes-table.AllSpends)
+		totalResults.Show()
 		cont.RemoveAll()
-		cont.Add(table)
+		cont.Add(table.Table)
 		cont.Show()
 	})
 
@@ -150,6 +209,7 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 			),
 		),
 		container.NewGridWithColumns(4, showAllBtn, showPeriodBtn, showMonthBtn, showYearBtn),
+		totalResults,
 	)
 }
 

@@ -1,2 +1,2 @@
-db/test2.db
-tutelka.db
+*.db
+*.exe

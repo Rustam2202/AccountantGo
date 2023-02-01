@@ -54,10 +54,10 @@ func Test1(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	for i := 0; i < len(result); i++ {
-		date, _ := time.Parse("02.01.2006", result[i][1])
-		income, _ := strconv.ParseFloat(result[i][2], 32)
-		spend, _ := strconv.ParseFloat(result[i][3], 32)
+	for i := 0; i < len(result.Data); i++ {
+		date, _ := time.Parse("02.01.2006", result.Data[i][1])
+		income, _ := strconv.ParseFloat(result.Data[i][2], 32)
+		spend, _ := strconv.ParseFloat(result.Data[i][3], 32)
 		if !(math.Abs(float64(test1Inputs[i+1].sum)-income-spend) <= 10e-3) {
 			t.Errorf("Expected: %f, got: +%0.2f -%0.2f", test1Inputs[i].sum, income, spend)
 		}
@@ -103,7 +103,7 @@ func Test2(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	for _, item := range outAll {
+	for _, item := range outAll.Data {
 		income, _ := strconv.ParseFloat(item[2], 32)
 		spend, _ := strconv.ParseFloat(item[3], 32)
 		id, _ := strconv.Atoi(item[0])

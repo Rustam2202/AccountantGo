@@ -9,6 +9,12 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
+type TableWithTotal struct {
+	Table      fyne.CanvasObject
+	AllIncomes float32
+	AllSpends  float32
+}
+
 const (
 	idWidth    = 40
 	width      = 150
@@ -16,19 +22,20 @@ const (
 	tableWidth = 850
 )
 
-func MakeTable(dateFrom time.Time, dateTo time.Time, dataBase *db.Database) (fyne.CanvasObject, error) {
+func MakeTable(dateFrom time.Time, dateTo time.Time, dataBase *db.Database) (TableWithTotal, error) {
 
 	data, err := dataBase.CalculateRecords(dateFrom, dateTo)
 	if err != nil {
-		return nil, err
+		return TableWithTotal{}, err
 	}
 
+	result := TableWithTotal{}
 	tableWithHead := container.NewWithoutLayout()
 	tableWithHead.Add(tableHeader())
 
 	table := widget.NewTable(
 		func() (int, int) {
-			return len(data), 5
+			return len(data.Data), 5
 		},
 		func() fyne.CanvasObject {
 			lable := widget.NewLabel("")
@@ -39,15 +46,15 @@ func MakeTable(dateFrom time.Time, dateTo time.Time, dataBase *db.Database) (fyn
 			label := o.(*widget.Label)
 			switch i.Col {
 			case 0:
-				label.SetText(data[i.Row][0])
+				label.SetText(data.Data[i.Row][0])
 			case 1:
-				label.SetText(data[i.Row][1])
+				label.SetText(data.Data[i.Row][1])
 			case 2:
-				label.SetText(data[i.Row][2])
+				label.SetText(data.Data[i.Row][2])
 			case 3:
-				label.SetText(data[i.Row][3])
+				label.SetText(data.Data[i.Row][3])
 			case 4:
-				label.SetText(data[i.Row][4])
+				label.SetText(data.Data[i.Row][4])
 			default:
 			}
 		})
@@ -59,13 +66,16 @@ func MakeTable(dateFrom time.Time, dateTo time.Time, dataBase *db.Database) (fyn
 	table.SetColumnWidth(2, width)
 	table.SetColumnWidth(3, width)
 	table.SetColumnWidth(4, width)
-	for i := 0; i < len(data); i++ {
-		if data[i][2] != "" && data[i][3] != "" {
+	for i := 0; i < len(data.Data); i++ {
+		if data.Data[i][2] != "" && data.Data[i][3] != "" {
 			table.SetRowHeight(i, height*2)
 		}
 	}
 	tableWithHead.Add(table)
-	return tableWithHead, nil
+	result.Table = tableWithHead
+	result.AllIncomes = data.AllIncomes
+	result.AllSpends = data.AllSpends
+	return result, nil
 }
 
 func tableHeader() *widget.Table {

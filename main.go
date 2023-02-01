@@ -4,9 +4,6 @@ import (
 	db "accounter/db"
 	gui "accounter/gui"
 	"fmt"
-	"math"
-	"math/rand"
-	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -20,7 +17,7 @@ var CalendByte []byte
 var DataBase db.Database
 
 func main() {
-	DataBase.Name = "tutelka"
+	DataBase.Name = "test2"
 	err := DataBase.OpenAndCreateLocalDb()
 	fmt.Println(err)
 
@@ -28,8 +25,6 @@ func main() {
 	//if err != nil {
 	//	DataBase.CreateDataBase("tutelka")
 	//}
-
-	// makeData()
 
 	a := app.New()
 	w := a.NewWindow("Accounter Manager")
@@ -55,7 +50,6 @@ func main() {
 	})
 
 	w.SetContent(
-
 		container.NewBorder(
 			top, bottom, nil, nil,
 			container.NewVBox(
@@ -70,34 +64,4 @@ func main() {
 	//	w.SetMainMenu(main_menu)
 
 	w.ShowAndRun()
-}
-
-type addInput struct {
-	sum     float32
-	date    time.Time
-	addType int
-}
-
-func makeData() {
-	var data [20]addInput
-	var koef float64 = 200000.0 // determinate range from -100k to +100k with rand.Float32()
-	minDate := time.Date(2020, 1, 1, 0, 0, 0, 0, &time.Location{}).Unix()
-	maxDate := time.Now().Unix()
-	delta := maxDate - minDate
-	rand.Seed(time.Now().UnixNano())
-	for i := 0; i < len(data); i++ {
-		data[i].sum = float32(math.Abs((rand.Float64() - 0.5) * koef))
-		data[i].date = time.Unix(rand.Int63n(delta)+minDate, 0)
-		data[i].addType = rand.Intn(3)
-	}
-	someComment := "Some comment for all"
-	for _, d := range data {
-		if d.addType == 0 {
-			DataBase.AddIncome(d.sum, d.date, someComment)
-		} else if d.addType == 1 {
-			DataBase.AddSpend(d.sum, d.date, someComment)
-		} else {
-			DataBase.AddIncomeAndSpend(d.sum, float32(math.Abs((rand.Float64()-0.5)*koef)), d.date, someComment, someComment)
-		}
-	}
 }
