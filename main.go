@@ -3,6 +3,7 @@ package main
 import (
 	db "accounter/db"
 	gui "accounter/gui"
+	"fmt"
 	"math"
 	"math/rand"
 	"time"
@@ -19,12 +20,14 @@ var CalendByte []byte
 var DataBase db.Database
 
 func main() {
-
 	DataBase.Name = "tutelka"
-	err := DataBase.OpenDataBase(DataBase.Name)
-	if err != nil {
-		DataBase.CreateDataBase("tutelka")
-	}
+	err := DataBase.OpenAndCreateLocalDb()
+	fmt.Println(err)
+
+	//	err := DataBase.OpenDataBase(DataBase.Name)
+	//if err != nil {
+	//	DataBase.CreateDataBase("tutelka")
+	//}
 
 	// makeData()
 
@@ -47,7 +50,7 @@ func main() {
 	strb := binding.BindString(&str)
 	currentDb := widget.NewLabelWithData(strb)
 	top := container.NewHBox(addDbBtn, openDbBtn, currentDb)
-	bottom:=widget.NewButton("Clear",func() {
+	bottom := widget.NewButton("Clear", func() {
 		ContWithTable.RemoveAll()
 	})
 
