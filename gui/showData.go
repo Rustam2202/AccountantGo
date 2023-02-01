@@ -36,29 +36,27 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 	monthOfMonthlyReportLabel.Alignment = fyne.TextAlignTrailing
 	yearOfMonthlyReportLabel := widget.NewLabel("Report for year:")
 	yearOfMonthlyReportLabel.Alignment = fyne.TextAlignTrailing
-	periodLabel := widget.NewLabel("Period:")
-	periodLabel.Alignment = fyne.TextAlignCenter
-	allIncomesLabel := widget.NewLabel("All incomes:")
-	allIncomesLabel.Alignment = fyne.TextAlignCenter
-	allSpendsLabel := widget.NewLabel("All spends:")
-	allSpendsLabel.Alignment = fyne.TextAlignCenter
-	totalValueLabel := widget.NewLabel("Total:")
-	totalValueLabel.Alignment = fyne.TextAlignCenter
-	period := widget.NewLabel("")
-	period.Alignment = fyne.TextAlignCenter
 
+	periodLabel := widget.NewLabel("Period:")
+	periodLabel.Alignment = fyne.TextAlignTrailing
+	allIncomesLabel := widget.NewLabel("All incomes:")
+	allIncomesLabel.Alignment = fyne.TextAlignTrailing
+	allSpendsLabel := widget.NewLabel("All spends:")
+	allSpendsLabel.Alignment = fyne.TextAlignTrailing
+	totalValueLabel := widget.NewLabel("Total:")
+	totalValueLabel.Alignment = fyne.TextAlignTrailing
+	period := widget.NewLabel("")
+	period.Alignment = fyne.TextAlignLeading
 	allIncomes := canvas.Text{}
-	allIncomes.Alignment = fyne.TextAlignCenter
+	allIncomes.Alignment = fyne.TextAlignLeading
 	allIncomes.Color = color.NRGBA{60, 179, 113, 255}
 	allIncomes.TextSize = 15
-
 	allSpends := canvas.Text{}
-	allSpends.Alignment = fyne.TextAlignCenter
+	allSpends.Alignment = fyne.TextAlignLeading
 	allSpends.Color = color.NRGBA{255, 99, 71, 255}
 	allSpends.TextSize = 15
-
 	total := canvas.Text{}
-	total.Alignment = fyne.TextAlignCenter
+	total.Alignment = fyne.TextAlignLeading
 	total.TextSize = 15
 
 	dateFromBind := binding.BindString(nil)
@@ -74,7 +72,7 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 	fromBtn := CalendarBtn(dateFromBind, win)
 	toBtn := CalendarBtn(dateToBind, win)
 
-	totalResults := container.NewHBox(
+	totalResults := container.NewGridWithColumns(8,
 		periodLabel, period, allIncomesLabel, &allIncomes,
 		allSpendsLabel, &allSpends, totalValueLabel, &total,
 	)
@@ -121,13 +119,6 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 
 		dateFrom := time.Date(year, month, 1, 0, 0, 0, 0, &time.Location{})
 		dateTo := time.Date(year, month, 31, 0, 0, 0, 0, &time.Location{})
-
-		//	dateFrom, err := utils.CheckDate(fmt.Sprintf("01.%d.%d", month, year))
-		//	dateTo, err := utils.CheckDate(dateToEntry.Text)
-		//	if err != nil {
-		//		dialog.ShowError(err, win)
-		//	return
-		//	}
 
 		table, err := MakeTable(dateFrom, dateTo, dataBase)
 		if err != nil {
@@ -195,6 +186,7 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 		cont.Add(table.Table)
 		cont.Show()
 	})
+	
 
 	return container.NewVBox(
 		labelPeriod,

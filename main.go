@@ -3,7 +3,6 @@ package main
 import (
 	db "accounter/db"
 	gui "accounter/gui"
-	"fmt"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -18,8 +17,7 @@ var DataBase db.Database
 
 func main() {
 	DataBase.Name = "test2"
-	err := DataBase.OpenAndCreateLocalDb()
-	fmt.Println(err)
+	DataBase.OpenAndCreateLocalDb()
 
 	//	err := DataBase.OpenDataBase(DataBase.Name)
 	//if err != nil {
@@ -45,13 +43,13 @@ func main() {
 	strb := binding.BindString(&str)
 	currentDb := widget.NewLabelWithData(strb)
 	top := container.NewHBox(addDbBtn, openDbBtn, currentDb)
-	bottom := widget.NewButton("Clear", func() {
+	clear := widget.NewButton("Clear", func() {
 		ContWithTable.RemoveAll()
 	})
 
 	w.SetContent(
 		container.NewBorder(
-			top, bottom, nil, nil,
+			top, clear, nil, nil,
 			container.NewVBox(
 				//	2,
 				container.NewVBox(
@@ -64,4 +62,5 @@ func main() {
 	//	w.SetMainMenu(main_menu)
 
 	w.ShowAndRun()
+	a.Run()
 }
