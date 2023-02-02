@@ -69,8 +69,8 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 	yearOfMonthlyReportEntry := widget.NewSelectEntry(years())
 	yearOfAnnualReportEntry := widget.NewSelectEntry(years())
 
-	fromBtn := CalendarBtn(dateFromBind, win)
-	toBtn := CalendarBtn(dateToBind, win)
+	//fromBtn := CalendarBtn(dateFromBind, win)
+	//toBtn := CalendarBtn(dateToBind, win)
 
 	totalResults := container.NewGridWithColumns(8,
 		periodLabel, period, allIncomesLabel, &allIncomes,
@@ -192,8 +192,8 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 		labelPeriod,
 		container.NewHBox(
 			container.NewGridWithColumns(4,
-				fromLabel, dateFromEntry, fromBtn, monthOfMonthlyReportLabel,
-				toLabel, dateToEntry, toBtn, yearOfMonthlyReportLabel,
+//			fromLabel, dateFromEntry, fromBtn, monthOfMonthlyReportLabel,
+//				toLabel, dateToEntry, toBtn, yearOfMonthlyReportLabel,
 			),
 			container.NewGridWithRows(2,
 				monthOfMonthlyReportEntry, yearOfAnnualReportEntry,

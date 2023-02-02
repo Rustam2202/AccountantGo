@@ -2,14 +2,9 @@ package main
 
 import (
 	db "accounter/db"
-	gui "accounter/gui"
+	"accounter/gui"
 
-	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
-	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/data/binding"
-	"fyne.io/fyne/v2/theme"
-	"fyne.io/fyne/v2/widget"
 )
 
 var CalendByte []byte
@@ -19,48 +14,59 @@ func main() {
 	DataBase.Name = "test2"
 	DataBase.OpenAndCreateLocalDb()
 
-	//	err := DataBase.OpenDataBase(DataBase.Name)
+	//err := DataBase.OpenDataBase(DataBase.Name)
 	//if err != nil {
 	//	DataBase.CreateDataBase("tutelka")
 	//}
 
-	a := app.New()
-	w := a.NewWindow("Accounter Manager")
-	w.Resize(fyne.NewSize(900, 850))
+	//a := app.New()
+	//c:=a.NewWindow("Accunter")
 
-	ContWithTable := container.NewWithoutLayout()
+	// app.SetIcon(resourceIconPng)
+	//w := a.NewWindow("Accounter Manager")
+	//w.Resize(fyne.NewSize(900, 850))
 
-	//	dbCreate := fyne.NewMenuItem("New", func() {})
-	//	dbOpen := fyne.NewMenuItem("Open", func() {})
-	//	dbClose := fyne.NewMenuItem("Close", func() {})
-	//	menuDb := fyne.NewMenu("Data base", dbCreate, dbOpen, dbClose)
-	//main_menu := fyne.NewMainMenu(menuDb)
+	/*
+		ContWithTable := container.NewWithoutLayout()
 
-	addDbBtn := widget.NewButtonWithIcon("New data base", theme.ContentAddIcon(), func() {})
-	addDbBtn.Alignment = widget.ButtonAlignCenter
-	openDbBtn := widget.NewButtonWithIcon("Open data base", theme.FolderOpenIcon(), func() {})
-	str := "data base name"
-	strb := binding.BindString(&str)
-	currentDb := widget.NewLabelWithData(strb)
-	top := container.NewHBox(addDbBtn, openDbBtn, currentDb)
-	clear := widget.NewButton("Clear", func() {
-		ContWithTable.RemoveAll()
-	})
+		//	dbCreate := fyne.NewMenuItem("New", func() {})
+		//	dbOpen := fyne.NewMenuItem("Open", func() {})
+		//	dbClose := fyne.NewMenuItem("Close", func() {})
+		//	menuDb := fyne.NewMenu("Data base", dbCreate, dbOpen, dbClose)
+		//main_menu := fyne.NewMainMenu(menuDb)
 
-	w.SetContent(
-		container.NewBorder(
-			top, clear, nil, nil,
-			container.NewVBox(
-				//	2,
+		addDbBtn := widget.NewButtonWithIcon("New data base", theme.ContentAddIcon(), func() {})
+		addDbBtn.Alignment = widget.ButtonAlignCenter
+		openDbBtn := widget.NewButtonWithIcon("Open data base", theme.FolderOpenIcon(), func() {})
+		str := "data base name"
+		strb := binding.BindString(&str)
+		currentDb := widget.NewLabelWithData(strb)
+		top := container.NewHBox(addDbBtn, openDbBtn, currentDb)
+		clear := widget.NewButton("Clear", func() {
+			ContWithTable.RemoveAll()
+		})
+
+		w.SetContent(
+			container.NewBorder(
+				top, clear, nil, nil,
 				container.NewVBox(
-					gui.AddOperation(&DataBase, w),
-					gui.PeriodDates(ContWithTable, &DataBase, w),
-				),
-				ContWithTable,
-			)),
-	)
-	//	w.SetMainMenu(main_menu)
+					//	2,
+					container.NewVBox(
+						gui.AddOperation(&DataBase, w),
+						gui.PeriodDates(ContWithTable, &DataBase, w),
+					),
+					ContWithTable,
+				)),
+		)
+		//	w.SetMainMenu(main_menu)
+	*/
 
-	w.ShowAndRun()
-	a.Run()
+	app := app.New()
+	//app.SetIcon(resourceIconPng)
+
+	c := gui.NewApp()
+	c.LoadUI(app)
+	app.Run()
+
+	//w.ShowAndRun()
 }

@@ -20,7 +20,9 @@ const (
 )
 
 func CheckEntry(sumStr string, dateStr string) (float32, time.Time, error) {
-
+	if sumStr == "" {
+		return 0, time.Time{}, nil
+	}
 	sum, err := strconv.ParseFloat(sumStr, 32)
 	if err != nil {
 		return 0, time.Time{}, errors.New("Sum format error")

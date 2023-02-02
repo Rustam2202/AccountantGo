@@ -37,9 +37,8 @@ func calendar() *fyne.Container {
 	return container.NewVBox(i, l, cal)
 }
 
-func CalendarBtn(date binding.String, win fyne.Window) *fyne.Container {
+func CalendarBtn(date *binding.ExternalString, win fyne.Window) *fyne.Container {
 	icon := calenIcon()
-
 	c := container.NewVBox(
 		widget.NewButtonWithIcon("    Calendar    ", icon, func() {
 			dialog.NewCustomConfirm(
@@ -48,7 +47,8 @@ func CalendarBtn(date binding.String, win fyne.Window) *fyne.Container {
 				"Cancel",
 				calendar(), func(b bool) {
 					dateToEntry, _ := time.Parse(showDateFormat, d.dateChosen.Text)
-					date.Set(dateToEntry.Format("02.01.2006"))
+					(*date).Set(dateToEntry.Format("02.01.2006"))
+					//date.Set(dateToEntry.Format("02.01.2006"))
 				},
 				win,
 			).Show()
