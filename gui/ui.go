@@ -4,6 +4,7 @@ import (
 	db "accounter/db"
 
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/widget"
@@ -18,6 +19,8 @@ const (
 type accounter struct {
 	dataBase *db.Database
 	win      fyne.Window
+	// canvas text
+	periodLabel, period, allIncomes, allSpends, total *canvas.Text
 	// entries
 	incomeEntry, spendEntry, dateIncomEntry, dateSpendEntry, commentIncomEntry, commentSpendEntry,
 	dateFromEntry, dateToEntry *widget.Entry
@@ -29,6 +32,8 @@ type accounter struct {
 	yearOfMonthlyReportEntry, yearOfAnnualReportEntry *widget.SelectEntry
 	// binds
 	dateIncomeBind, dateSpendBind, dateFromBind, dateToBind binding.String
+	// container
+	totalResults *fyne.Container
 }
 
 func (acc *accounter) makeLabel(text string, alig int) *widget.Label {
@@ -52,8 +57,6 @@ func (acc *accounter) makeEntry(ent *widget.Entry, placeholder string) *widget.E
 	return ent
 }
 
-
-
 func (acc *accounter) MakeButton(btn *widget.Button, label string, f func()) *widget.Button {
 	btn = widget.NewButton(label, f)
 	return btn
@@ -63,11 +66,14 @@ func (acc accounter) LoadUI(app fyne.App) {
 	acc.dataBase.Name = "test4"
 	acc.dataBase.OpenAndCreateLocalDb()
 	acc.win = app.NewWindow("Accounter")
+	acc.totalResults.Hide()
 	acc.win.SetContent(
 		container.NewVBox(
 			container.NewVBox(
 				acc.makeAddBlock(),
 				acc.makeReportBlock(),
+				acc.showResults(),
+				acc.MakeTable(),
 			),
 		),
 	)
@@ -80,6 +86,11 @@ func NewApp() *accounter {
 	return &accounter{
 		dataBase:                  &db.Database{},
 		win:                       nil,
+		periodLabel:               &canvas.Text{},
+		period:                    &canvas.Text{},
+		allIncomes:                &canvas.Text{},
+		allSpends:                 &canvas.Text{},
+		total:                     &canvas.Text{},
 		incomeEntry:               widget.NewEntry(),
 		spendEntry:                widget.NewEntry(),
 		dateIncomEntry:            &widget.Entry{},
@@ -104,5 +115,6 @@ func NewApp() *accounter {
 		dateSpendBind:             binding.BindString(nil),
 		dateFromBind:              binding.BindString(nil),
 		dateToBind:                binding.BindString(nil),
+		totalResults:              &fyne.Container{},
 	}
 }

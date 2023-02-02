@@ -1,7 +1,7 @@
 package gui
 
 import (
-	"accounter/db"
+	"fmt"
 	"time"
 
 	"fyne.io/fyne/v2"
@@ -20,18 +20,29 @@ const (
 	width      = 150
 	height     = 35
 	tableWidth = 850
+	lauout     = "02.01.2006"
 )
 
-func MakeTable(dateFrom time.Time, dateTo time.Time, dataBase *db.Database) (TableWithTotal, error) {
+func (acc *accounter) showResults() *fyne.Container {
+	//acc.totalResults.Add(
+	return container.NewGridWithColumns(8,
+		acc.periodLabel, acc.period, widget.NewLabel("All incomes"), acc.allIncomes,
+		widget.NewLabel("All spends"), acc.allSpends, widget.NewLabel("Total"), acc.total,
+	)
+	//)
+}
 
-	data, err := dataBase.CalculateRecords(dateFrom, dateTo)
+func (acc *accounter) MakeTable( /*dateFrom time.Time, dateTo time.Time, dataBase *db.Database*/ ) *fyne.Container {
+	dateFrom, err := time.Parse(lauout, acc.dateFromEntry.Text)
+	dateTo, err := time.Parse(lauout, acc.dateToEntry.Text)
+	data, err := acc.dataBase.CalculateRecords(dateFrom, dateTo)
 	if err != nil {
-		return TableWithTotal{}, err
+		return nil
+		//return TableWithTotal{}, err
 	}
 
-	result := TableWithTotal{}
+	//	result := TableWithTotal{}
 	tableWithHead := container.NewWithoutLayout()
-	tableWithHead.Add(tableHeader())
 
 	table := widget.NewTable(
 		func() (int, int) {
@@ -71,11 +82,18 @@ func MakeTable(dateFrom time.Time, dateTo time.Time, dataBase *db.Database) (Tab
 			table.SetRowHeight(i, height*2)
 		}
 	}
+
+	acc.allIncomes.Text = fmt.Sprintf("%0.2f", data.AllIncomes)
+	acc.allSpends.Text = fmt.Sprintf("%0.2f", data.AllSpends)
+	acc.total.Text = fmt.Sprintf("%0.2f", data.AllIncomes-data.AllSpends)
+	//	result.Table = tableWithHead
+	//	result.AllIncomes = data.AllIncomes
+	//	result.AllSpends = data.AllSpends
+	//	return result, nil
+	//	tableWithHead.Add(acc.showResults())
+	tableWithHead.Add(tableHeader())
 	tableWithHead.Add(table)
-	result.Table = tableWithHead
-	result.AllIncomes = data.AllIncomes
-	result.AllSpends = data.AllSpends
-	return result, nil
+	return tableWithHead
 }
 
 func tableHeader() *widget.Table {

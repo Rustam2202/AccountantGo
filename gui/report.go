@@ -1,20 +1,11 @@
 package gui
 
 import (
-	"accounter/db"
-	"accounter/utils"
-	"errors"
-	"fmt"
-	"image/color"
-
 	"strconv"
 	"time"
 
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/data/binding"
-	"fyne.io/fyne/v2/dialog"
 
 	"fyne.io/fyne/v2/widget"
 )
@@ -32,25 +23,51 @@ func (acc *accounter) makeSelectWithEntry(s *widget.SelectEntry) *widget.SelectE
 }
 
 func (acc *accounter) makeReportBlock() *fyne.Container {
+	acc.totalResults.Hide()
 	return container.NewVBox(
 		acc.makeLabel("Enter period to show report", 1), // header
 		container.NewHBox(
 			container.NewGridWithColumns(4,
-				acc.makeLabel("Period begin:", 2), acc.dateFromEntry, 
-				acc.fromBtn, acc.makeLabel("Month and year:", 2),
-				acc.makeLabel("Period end:", 2), acc.dateToEntry, 
-				acc.toBtn, acc.makeLabel("Year:", 2),
+				acc.makeLabel("Period begin:", 2),
+				acc.makeEntryWithData(acc.dateFromBind, acc.dateFromEntry),
+				CalendarBtn(acc.dateFromBind, acc.win),
+				acc.makeLabel("Month and year:", 2),
+				acc.makeLabel("Period end:", 2),
+				acc.makeEntryWithData(acc.dateToBind, acc.dateToEntry),
+				CalendarBtn(acc.dateToBind, acc.win),
+				acc.makeLabel("Year:", 2),
 			),
 			container.NewGridWithRows(2,
 				acc.makeSelect(acc.monthOfMonthlyReportEntry), acc.makeSelectWithEntry(acc.yearOfAnnualReportEntry),
 				acc.makeSelectWithEntry(acc.yearOfMonthlyReportEntry),
 			),
 		),
-		container.NewGridWithColumns(4, acc.showAllBtn, acc.showPeriodBtn, acc.showMonthBtn, acc.showYearBtn),
-		// totalResults,
+		container.NewGridWithColumns(4,
+			acc.MakeButton(acc.showAllBtn, "Show all", acc.showAll),
+			acc.showPeriodBtn, acc.showMonthBtn, acc.showYearBtn),
+		acc.totalResults,
 	)
 }
 
+func (acc *accounter) showAll() {
+	acc.dateFromEntry.Text = "01.01.2019" // time.Date(2020, 1, 1, 0, 0, 0, 0, &time.Location{})
+	acc.dateToEntry.Text = "02.02.2023"   //time.Now()
+
+	table := acc.MakeTable()
+//	if err != nil {
+//		dialog.ShowError(err, acc.win)
+		return
+//	}
+	//	table.Hide()
+	acc.totalResults.RemoveAll()
+	acc.periodLabel.Text = "All period"
+	// acc.periodLabel.SetText("All period")
+	acc.showResults()
+	acc.totalResults.Add(table)
+	acc.totalResults.Show()
+}
+
+/*
 func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *fyne.Container {
 
 	empty := widget.NewLabel("")
@@ -232,6 +249,7 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 		totalResults,
 	)
 }
+*/
 
 // Make 3 (2 last and current) years for yearEntry widget
 func years() []string {

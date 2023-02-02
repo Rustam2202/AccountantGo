@@ -14,22 +14,23 @@ import (
 )
 
 func (acc *accounter) makeEntryWithData(bind binding.String, ent *widget.Entry) *widget.Entry {
-	bind = binding.BindString(&ent.Text)
-	ent = widget.NewEntryWithData(bind)
+	ent.Bind(bind)
 	return ent
 }
 
 func (acc *accounter) makeAddBlock() *fyne.Container {
-	calendarBtn1 := CalendarBtn(acc.dateIncomeBind, acc.win)
-	calendarBtn2 := CalendarBtn(acc.dateSpendBind, acc.win)
 	return container.NewVBox(
 		acc.makeLabel("Enter income and/or spend to add in database", 1), // header
 		container.NewHBox(
 			container.NewGridWithColumns(4,
-				acc.makeEntry(acc.incomeEntry, "Enter Income:"), acc.makeEntryWithData(acc.dateIncomeBind, acc.dateIncomEntry),
-				calendarBtn1, acc.makeEntry(acc.commentIncomEntry, "Enter comment"),
-				acc.makeEntry(acc.spendEntry, "Enter Spend:"), acc.makeEntryWithData(acc.dateSpendBind, acc.dateSpendEntry),
-				calendarBtn2, acc.makeEntry(acc.commentSpendEntry, "Enter comment"),
+				acc.makeEntry(acc.incomeEntry, "Enter Income:"),
+				acc.makeEntryWithData(acc.dateIncomeBind, acc.dateIncomEntry),
+				CalendarBtn(acc.dateIncomeBind, acc.win),
+				acc.makeEntry(acc.commentIncomEntry, "Enter comment"),
+				acc.makeEntry(acc.spendEntry, "Enter Spend:"),
+				acc.makeEntryWithData(acc.dateSpendBind, acc.dateSpendEntry),
+				CalendarBtn(acc.dateSpendBind, acc.win),
+				acc.makeEntry(acc.commentSpendEntry, "Enter comment"),
 			),
 			acc.MakeButton(acc.AddBtn, "Add", acc.AddBtnEvent),
 		),
