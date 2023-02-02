@@ -2,21 +2,61 @@ package gui
 
 import (
 	db "accounter/db"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/widget"
+)
+
+const (
+	lead   int = 0
+	center     = 1
+	trail      = 2
 )
 
 type accounter struct {
 	dataBase *db.Database
 	win      fyne.Window
-	// entries:
+	// entries
 	incomeEntry, spendEntry, dateIncomEntry, dateSpendEntry, commentIncomEntry, commentSpendEntry,
-	dateFromEntry, dateToEntry, monthOfMonthlyReportEntry, yearOfMonthlyReportEntry,
-	yearOfAnnualReportEntry *widget.Entry
-	// buttons:
+	dateFromEntry, dateToEntry *widget.Entry
+	// buttons
 	calendarBtn1, calendarBtn2, AddBtn, fromBtn, toBtn,
 	showPeriodBtn, showMonthBtn, showYearBtn, showAllBtn *widget.Button
+	// selects
+	monthOfMonthlyReportEntry                         *widget.Select
+	yearOfMonthlyReportEntry, yearOfAnnualReportEntry *widget.SelectEntry
+	// binds
+	dateIncomeBind, dateSpendBind, dateFromBind, dateToBind binding.String
+}
+
+func (acc *accounter) makeLabel(text string, alig int) *widget.Label {
+	label := widget.NewLabel(text)
+	switch alig {
+	case 0:
+		label.Alignment = fyne.TextAlignLeading
+	case 1:
+		label.Alignment = fyne.TextAlignCenter
+	case 2:
+		label.Alignment = fyne.TextAlignTrailing
+	default:
+		label.Alignment = fyne.TextAlignCenter
+	}
+
+	return label
+}
+
+func (acc *accounter) makeEntry(ent *widget.Entry, placeholder string) *widget.Entry {
+	ent.SetPlaceHolder(placeholder)
+	return ent
+}
+
+
+
+func (acc *accounter) MakeButton(btn *widget.Button, label string, f func()) *widget.Button {
+	btn = widget.NewButton(label, f)
+	return btn
 }
 
 func (acc accounter) LoadUI(app fyne.App) {
@@ -27,6 +67,7 @@ func (acc accounter) LoadUI(app fyne.App) {
 		container.NewVBox(
 			container.NewVBox(
 				acc.makeAddBlock(),
+				acc.makeReportBlock(),
 			),
 		),
 	)
@@ -47,9 +88,6 @@ func NewApp() *accounter {
 		commentSpendEntry:         &widget.Entry{},
 		dateFromEntry:             &widget.Entry{},
 		dateToEntry:               &widget.Entry{},
-		monthOfMonthlyReportEntry: &widget.Entry{},
-		yearOfMonthlyReportEntry:  &widget.Entry{},
-		yearOfAnnualReportEntry:   &widget.Entry{},
 		calendarBtn1:              &widget.Button{},
 		calendarBtn2:              &widget.Button{},
 		AddBtn:                    &widget.Button{},
@@ -59,5 +97,12 @@ func NewApp() *accounter {
 		showMonthBtn:              &widget.Button{},
 		showYearBtn:               &widget.Button{},
 		showAllBtn:                &widget.Button{},
+		monthOfMonthlyReportEntry: &widget.Select{},
+		yearOfMonthlyReportEntry:  &widget.SelectEntry{},
+		yearOfAnnualReportEntry:   &widget.SelectEntry{},
+		dateIncomeBind:            binding.BindString(nil),
+		dateSpendBind:             binding.BindString(nil),
+		dateFromBind:              binding.BindString(nil),
+		dateToBind:                binding.BindString(nil),
 	}
 }

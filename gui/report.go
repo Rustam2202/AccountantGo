@@ -21,6 +21,36 @@ import (
 
 var months = []string{"Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov,", "Dec"}
 
+func (acc *accounter) makeSelect(s *widget.Select) *widget.Select {
+	s = widget.NewSelect(months, func(s string) {})
+	return s
+}
+
+func (acc *accounter) makeSelectWithEntry(s *widget.SelectEntry) *widget.SelectEntry {
+	s = widget.NewSelectEntry(years())
+	return s
+}
+
+func (acc *accounter) makeReportBlock() *fyne.Container {
+	return container.NewVBox(
+		acc.makeLabel("Enter period to show report", 1), // header
+		container.NewHBox(
+			container.NewGridWithColumns(4,
+				acc.makeLabel("Period begin:", 2), acc.dateFromEntry, 
+				acc.fromBtn, acc.makeLabel("Month and year:", 2),
+				acc.makeLabel("Period end:", 2), acc.dateToEntry, 
+				acc.toBtn, acc.makeLabel("Year:", 2),
+			),
+			container.NewGridWithRows(2,
+				acc.makeSelect(acc.monthOfMonthlyReportEntry), acc.makeSelectWithEntry(acc.yearOfAnnualReportEntry),
+				acc.makeSelectWithEntry(acc.yearOfMonthlyReportEntry),
+			),
+		),
+		container.NewGridWithColumns(4, acc.showAllBtn, acc.showPeriodBtn, acc.showMonthBtn, acc.showYearBtn),
+		// totalResults,
+	)
+}
+
 func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *fyne.Container {
 
 	empty := widget.NewLabel("")
@@ -186,15 +216,13 @@ func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *
 		cont.Add(table.Table)
 		cont.Show()
 	})
-	
 
 	return container.NewVBox(
 		labelPeriod,
 		container.NewHBox(
-			container.NewGridWithColumns(4,
-//			fromLabel, dateFromEntry, fromBtn, monthOfMonthlyReportLabel,
-//				toLabel, dateToEntry, toBtn, yearOfMonthlyReportLabel,
-			),
+			container.NewGridWithColumns(4), //			fromLabel, dateFromEntry, fromBtn, monthOfMonthlyReportLabel,
+			//				toLabel, dateToEntry, toBtn, yearOfMonthlyReportLabel,
+
 			container.NewGridWithRows(2,
 				monthOfMonthlyReportEntry, yearOfAnnualReportEntry,
 				yearOfMonthlyReportEntry, empty,

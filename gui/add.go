@@ -13,26 +13,27 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func (acc *accounter) makeLabel(text string) *widget.Label {
-	return widget.NewLabel(text)
-}
-
-func (acc *accounter) makeEntry(ent *widget.Entry, placeholder string) *widget.Entry {
-
-	//	ent = widget.NewEntry()
-	ent.SetPlaceHolder(placeholder)
+func (acc *accounter) makeEntryWithData(bind binding.String, ent *widget.Entry) *widget.Entry {
+	bind = binding.BindString(&ent.Text)
+	ent = widget.NewEntryWithData(bind)
 	return ent
 }
 
-func (acc *accounter) makeEntryWithData(ent *widget.Entry) *binding.ExternalString {
-	bind := binding.BindString(nil)
-	ent = widget.NewEntryWithData(bind)
-	return &bind
-}
-
-func (acc *accounter) MakeButton(btn *widget.Button, label string, f func()) *widget.Button {
-	btn = widget.NewButton(label, f)
-	return btn
+func (acc *accounter) makeAddBlock() *fyne.Container {
+	calendarBtn1 := CalendarBtn(acc.dateIncomeBind, acc.win)
+	calendarBtn2 := CalendarBtn(acc.dateSpendBind, acc.win)
+	return container.NewVBox(
+		acc.makeLabel("Enter income and/or spend to add in database", 1), // header
+		container.NewHBox(
+			container.NewGridWithColumns(4,
+				acc.makeEntry(acc.incomeEntry, "Enter Income:"), acc.makeEntryWithData(acc.dateIncomeBind, acc.dateIncomEntry),
+				calendarBtn1, acc.makeEntry(acc.commentIncomEntry, "Enter comment"),
+				acc.makeEntry(acc.spendEntry, "Enter Spend:"), acc.makeEntryWithData(acc.dateSpendBind, acc.dateSpendEntry),
+				calendarBtn2, acc.makeEntry(acc.commentSpendEntry, "Enter comment"),
+			),
+			acc.MakeButton(acc.AddBtn, "Add", acc.AddBtnEvent),
+		),
+	)
 }
 
 func (acc *accounter) AddBtnEvent() {
@@ -77,23 +78,6 @@ func (acc *accounter) AddBtnEvent() {
 	acc.dateIncomEntry.Refresh()
 	acc.spendEntry.Refresh()
 	acc.dateSpendEntry.Refresh()
-}
-
-func (acc *accounter) makeAddBlock() *fyne.Container {
-	calendarBtn1 := CalendarBtn(acc.makeEntryWithData(acc.dateIncomEntry), acc.win)
-	calendarBtn2 := CalendarBtn(acc.makeEntryWithData(acc.dateSpendEntry), acc.win)
-	return container.NewVBox(
-		acc.makeLabel("Enter income and/or spend to add in database"), // header
-		container.NewHBox(
-			container.NewGridWithColumns(4,
-				acc.makeLabel("Enter Income:"), acc.makeEntry(acc.incomeEntry, "Enter Income:"),
-				calendarBtn1, acc.makeEntry(acc.commentIncomEntry, "Enter comment"),
-				acc.makeLabel("Enter Spend:"), acc.makeEntry(acc.spendEntry, "Enter Spend:"),
-				calendarBtn2, acc.makeEntry(acc.commentSpendEntry, "Enter comment"),
-			),
-			acc.MakeButton(acc.AddBtn, "Add", acc.AddBtnEvent),
-		),
-	)
 }
 
 func AddOperation(dataBase *db.Database, win fyne.Window) *fyne.Container {
