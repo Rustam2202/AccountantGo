@@ -10,10 +10,12 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
+type allign fyne.TextAlign
+
 const (
-	lead   int = 0
-	center     = 1
-	trail      = 2
+	lead allign = 0
+	center
+	trail
 )
 
 type accounter struct {
@@ -36,11 +38,12 @@ type accounter struct {
 	dateIncomeBind, dateSpendBind, dateFromBind, dateToBind binding.String
 	// container
 	totalResults *fyne.Container
+	//tabel *fyne.Container
 }
 
-func (acc *accounter) makeLabel(text string, alig int) *widget.Label {
+func (acc *accounter) makeLabel(text string, al allign) *widget.Label {
 	label := widget.NewLabel(text)
-	switch alig {
+	switch al {
 	case 0:
 		label.Alignment = fyne.TextAlignLeading
 	case 1:
@@ -68,15 +71,14 @@ func (acc accounter) LoadUI(app fyne.App) {
 	acc.dataBase.Name = "test4"
 	acc.dataBase.OpenAndCreateLocalDb()
 	acc.win = app.NewWindow("Accounter")
-	acc.totalResults.Hide()
+	//acc.totalResults.Hide()
 	acc.win.SetContent(
 		container.NewVBox(
 			container.NewVBox(
 				acc.makeAddBlock(),
 				acc.makeReportBlock(),
-				acc.makeTotal(),
-				acc.MakeTable(),
 			),
+			acc.totalResults,
 		),
 	)
 	acc.win.Resize(fyne.NewSize(900, 850))
@@ -115,6 +117,6 @@ func NewApp() *accounter {
 		dateSpendBind:             binding.BindString(nil),
 		dateFromBind:              binding.BindString(nil),
 		dateToBind:                binding.BindString(nil),
-		totalResults:              &fyne.Container{},
+		totalResults:              container.NewVBox(),
 	}
 }

@@ -50,7 +50,6 @@ func main() {
 			container.NewBorder(
 				top, clear, nil, nil,
 				container.NewVBox(
-					//	2,
 					container.NewVBox(
 						gui.AddOperation(&DataBase, w),
 						gui.PeriodDates(ContWithTable, &DataBase, w),

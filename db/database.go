@@ -158,7 +158,7 @@ func (db *Database) DropTable() error {
 	return nil
 }
 
-func (db *Database) CalculateRecords(dateFrom time.Time, dateTo time.Time) (CalculateResult, error) {
+func (db *Database) CalculateRecords(dateFrom, dateTo *time.Time) (CalculateResult, error) {
 	//	if err := db.OpenDataBase(db.Name); err != nil {
 	//		return nil, err
 	//	}
