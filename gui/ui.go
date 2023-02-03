@@ -26,7 +26,7 @@ type accounter struct {
 	// float32
 	allIncomes, allSpends, total float32
 	// entries
-	incomeEntry, spendEntry, dateIncomEntry, dateSpendEntry, commentIncomEntry, commentSpendEntry,
+	IncomeEntry, spendEntry, dateIncomEntry, dateSpendEntry, commentIncomEntry, commentSpendEntry,
 	dateFromEntry, dateToEntry *widget.Entry
 	// buttons
 	calendarBtn1, calendarBtn2, AddBtn, fromBtn, toBtn,
@@ -38,7 +38,8 @@ type accounter struct {
 	dateIncomeBind, dateSpendBind, dateFromBind, dateToBind binding.String
 	// container
 	totalResults *fyne.Container
-	//tabel *fyne.Container
+	// widgets
+//	monthOfMonthlyReportEntry *fyne.Widget
 }
 
 func (acc *accounter) makeLabel(text string, al allign) *widget.Label {
@@ -68,7 +69,7 @@ func (acc *accounter) MakeButton(btn *widget.Button, label string, f func()) *wi
 }
 
 func (acc accounter) LoadUI(app fyne.App) {
-	acc.dataBase.Name = "test4"
+	acc.dataBase.Name = "main"
 	acc.dataBase.OpenAndCreateLocalDb()
 	acc.win = app.NewWindow("Accounter")
 	//acc.totalResults.Hide()
@@ -93,7 +94,7 @@ func NewApp() *accounter {
 		periodLabel: &canvas.Text{},
 		period:      &canvas.Text{},
 
-		incomeEntry:               widget.NewEntry(),
+		IncomeEntry:               widget.NewEntry(),
 		spendEntry:                widget.NewEntry(),
 		dateIncomEntry:            &widget.Entry{},
 		dateSpendEntry:            &widget.Entry{},

@@ -11,8 +11,8 @@ var CalendByte []byte
 var DataBase db.Database
 
 func main() {
-	DataBase.Name = "test2"
-	DataBase.OpenAndCreateLocalDb()
+	//DataBase.Name = "main"
+	//DataBase.OpenAndCreateLocalDb()
 
 	//err := DataBase.OpenDataBase(DataBase.Name)
 	//if err != nil {

@@ -23,7 +23,7 @@ func (acc *accounter) makeAddBlock() *fyne.Container {
 		acc.makeLabel("Enter income and/or spend to add in database", 1), // header
 		container.NewHBox(
 			container.NewGridWithColumns(4,
-				acc.makeEntry(acc.incomeEntry, "Enter Income:"),
+				acc.makeEntry(acc.IncomeEntry, "Enter Income:"),
 				acc.makeEntryWithData(acc.dateIncomeBind, acc.dateIncomEntry),
 				CalendarBtn(acc.dateIncomeBind, acc.win),
 				acc.makeEntry(acc.commentIncomEntry, "Enter comment"),
@@ -38,7 +38,7 @@ func (acc *accounter) makeAddBlock() *fyne.Container {
 }
 
 func (acc *accounter) AddBtnEvent() {
-	if !(acc.incomeEntry.Text != "" || acc.spendEntry.Text != "") {
+	if !(acc.IncomeEntry.Text != "" || acc.spendEntry.Text != "") {
 		dialog.ShowError(errors.New("Income or Spend field must contain a value"), acc.win)
 		return
 	}
@@ -46,7 +46,7 @@ func (acc *accounter) AddBtnEvent() {
 	var income, spend float32
 	var dateInc, dateSpn time.Time
 	var errInc, errSpn error
-	income, dateInc, errInc = utils.CheckEntry(acc.incomeEntry.Text, acc.dateIncomEntry.Text)
+	income, dateInc, errInc = utils.CheckEntry(acc.IncomeEntry.Text, acc.dateIncomEntry.Text)
 	if errInc != nil {
 		dialog.ShowError(errInc, acc.win)
 		return
@@ -71,11 +71,11 @@ func (acc *accounter) AddBtnEvent() {
 	fyne.CurrentApp().SendNotification(fyne.NewNotification("Add success", "Income added"))
 
 	// clearing entry fields
-	acc.incomeEntry.Text = ""
+	acc.IncomeEntry.Text = ""
 	acc.dateIncomEntry.Text = ""
 	acc.spendEntry.Text = ""
 	acc.dateSpendEntry.Text = ""
-	acc.incomeEntry.Refresh()
+	acc.IncomeEntry.Refresh()
 	acc.dateIncomEntry.Refresh()
 	acc.spendEntry.Refresh()
 	acc.dateSpendEntry.Refresh()

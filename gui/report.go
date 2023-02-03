@@ -16,17 +16,20 @@ import (
 
 var months = []string{"Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov,", "Dec"}
 
-func (acc *accounter) makeSelect(s *widget.Select) *widget.Select {
-	s = widget.NewSelect(months, func(s string) {})
-	return s
+func (acc *accounter) makeSelect(wid *widget.Select, options []string) *widget.Select {
+	wid = widget.NewSelect(months, func(s string) {})
+	return wid
 }
 
-func (acc *accounter) makeSelectWithEntry(s *widget.SelectEntry) *widget.SelectEntry {
-	s = widget.NewSelectEntry(years())
-	return s
+func (acc *accounter) makeSelectWithEntry(wid *widget.SelectEntry) *widget.SelectEntry {
+	wid = widget.NewSelectEntry(years())
+	return wid
 }
 
 func (acc *accounter) makeReportBlock() *fyne.Container {
+	acc.monthOfMonthlyReportEntry = widget.NewSelect(months, func(s string) {})
+	acc.yearOfMonthlyReportEntry = widget.NewSelectEntry(years())
+	acc.yearOfAnnualReportEntry = widget.NewSelectEntry(years())
 	return container.NewVBox(
 		acc.makeLabel("Enter period to show report", 1), // header
 		container.NewHBox(
@@ -41,9 +44,13 @@ func (acc *accounter) makeReportBlock() *fyne.Container {
 				acc.makeLabel("Year:", allign(trail)),
 			),
 			container.NewGridWithRows(2,
-				acc.makeSelect(acc.monthOfMonthlyReportEntry),
-				acc.makeSelectWithEntry(acc.yearOfAnnualReportEntry),
-				acc.makeSelectWithEntry(acc.yearOfMonthlyReportEntry),
+				acc.monthOfMonthlyReportEntry,
+				acc.yearOfAnnualReportEntry,
+				acc.yearOfMonthlyReportEntry,
+
+			//acc.makeSelect(acc.monthOfMonthlyReportEntry, months),
+			//acc.makeSelectWithEntry(acc.yearOfAnnualReportEntry),
+			//acc.makeSelectWithEntry(acc.yearOfMonthlyReportEntry),
 			),
 		),
 		container.NewGridWithColumns(4,
@@ -136,8 +143,6 @@ func (acc *accounter) showPeriod() {
 	acc.totalResults.Add(table)
 	acc.totalResults.Show()
 }
-
-
 
 /*
 func PeriodDates(cont *fyne.Container, dataBase *db.Database, win fyne.Window) *fyne.Container {
