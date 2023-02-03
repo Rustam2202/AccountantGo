@@ -10,7 +10,6 @@ require (
 require golang.org/x/text v0.3.7 // indirect
 
 require (
-	fyne.io/fyne v1.4.3
 	fyne.io/systray v1.10.1-0.20221115204952-d16a6177e6f1 // indirect
 	github.com/benoitkugler/textlayout v0.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect

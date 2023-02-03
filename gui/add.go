@@ -4,6 +4,7 @@ import (
 	"accounter/db"
 	"accounter/utils"
 	"errors"
+
 	"time"
 
 	"fyne.io/fyne/v2"
@@ -13,10 +14,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func (acc *accounter) makeEntryWithData(bind binding.String, ent *widget.Entry) *widget.Entry {
-	ent.Bind(bind)
-	return ent
-}
+
 
 func (acc *accounter) makeAddBlock() *fyne.Container {
 	return container.NewVBox(
@@ -39,7 +37,7 @@ func (acc *accounter) makeAddBlock() *fyne.Container {
 
 func (acc *accounter) AddBtnEvent() {
 	if !(acc.IncomeEntry.Text != "" || acc.spendEntry.Text != "") {
-		dialog.ShowError(errors.New("Income or Spend field must contain a value"), acc.win)
+		dialog.ShowError(errors.New(" Income or Spend field must contain a value"), acc.win)
 		return
 	}
 
@@ -103,7 +101,7 @@ func AddOperation(dataBase *db.Database, win fyne.Window) *fyne.Container {
 
 	addBtn := widget.NewButton("Add record", func() {
 		if !(incomeEntry.Text != "" || spendEntry.Text != "") {
-			dialog.ShowError(errors.New("Income or Spend field must contain a value"), win)
+			dialog.ShowError(errors.New(" Income or Spend field must contain a value"), win)
 			return
 		}
 

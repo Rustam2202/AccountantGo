@@ -61,6 +61,11 @@ func (acc *accounter) makeEntry(ent *widget.Entry, placeholder string) *widget.E
 	return ent
 }
 
+func (acc *accounter) makeEntryWithData(bind binding.String, ent *widget.Entry) *widget.Entry {
+	ent.Bind(bind)
+	return ent
+}
+
 func (acc *accounter) MakeButton(btn *widget.Button, label string, f func()) *widget.Button {
 	btn = widget.NewButton(label, f)
 	return btn

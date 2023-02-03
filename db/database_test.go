@@ -28,9 +28,14 @@ var test1Inputs = []addInput{
 	{sum: -0.03, date: time.Date(2023, time.January, 30, 0, 0, 0, 0, &time.Location{})},     // 7
 }
 
-func TestCreateDB(t *testing.T) {
+func TestCreateAndDropSQLite(t *testing.T) {
 	var DataBase Database
-	err := DataBase.CreateDataBase("create_db_test")
+	DataBase.Name = "db"
+	err := DataBase.OpenAndCreateLocalDb()
+	if err != nil {
+		t.Error(err)
+	}
+	err = DataBase.DropTable()
 	if err != nil {
 		t.Error(err)
 	}
@@ -38,7 +43,8 @@ func TestCreateDB(t *testing.T) {
 
 func Test1(t *testing.T) {
 	var DataBase Database
-	DataBase.CreateDataBase("test_1")
+	DataBase.Name = "test1"
+	DataBase.OpenAndCreateLocalDb()
 	DataBase.AddSpend(test1Inputs[0].sum, test1Inputs[0].date, "text")
 	DataBase.AddIncome(test1Inputs[1].sum, test1Inputs[1].date, "loooooooooooooooooong text")
 	DataBase.AddIncome(test1Inputs[2].sum, test1Inputs[2].date, "")
@@ -65,6 +71,7 @@ func Test1(t *testing.T) {
 			t.Errorf("Expected: %q, got: %q", test1Inputs[i].date, date)
 		}
 	}
+	DataBase.DropTable()
 }
 
 // Test2 checks SQLite local DB-file

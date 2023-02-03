@@ -27,7 +27,10 @@ const (
 )
 
 var Lime = color.NRGBA{0, 255, 0, 255}
+var LimeGreen = color.NRGBA{50, 205, 50, 255}
 var DarkRed = color.NRGBA{139, 0, 0, 255}
+var Chartreuse = color.NRGBA{127, 255, 0, 255}
+var LightCoral = color.NRGBA{240, 128, 128, 255}
 
 func (acc *accounter) makeCanvasText(value float32, color color.Color, al allign) *canvas.Text {
 	text := canvas.NewText(fmt.Sprintf("%0.2f", value), color)
@@ -37,15 +40,21 @@ func (acc *accounter) makeCanvasText(value float32, color color.Color, al allign
 }
 
 func (acc *accounter) makeTotal() *fyne.Container {
+	var totatColor color.Color
+	if acc.total >= 0 {
+		totatColor = Lime
+	} else {
+		totatColor = LightCoral
+	}
 	return container.NewHBox(
 		acc.makeLabel("Period:", allign(trail)), acc.makeLabel(acc.period.Text, allign(lead)),
 		acc.makeLabel("All incomes:", allign(trail)), acc.makeCanvasText(acc.allIncomes, Lime, allign(lead)),
 		acc.makeLabel("All spends:", allign(trail)), acc.makeCanvasText(acc.allSpends, DarkRed, allign(lead)),
-		acc.makeLabel("Total:", allign(trail)), acc.makeCanvasText(acc.total, Lime, allign(lead)),
+		acc.makeLabel("Total:", allign(trail)), acc.makeCanvasText(acc.total, totatColor, allign(lead)),
 	)
 }
 
-func (acc *accounter) MakeTable(dateFrom, dateTo *time.Time) *fyne.Container {
+func (acc *accounter) MakeTable(dateFrom, dateTo time.Time) *fyne.Container {
 	/*
 		dateFrom, err1 := time.Parse(lauout, acc.dateFromEntry.Text)
 		dateTo, err2 := time.Parse(lauout, acc.dateToEntry.Text)

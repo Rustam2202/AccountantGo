@@ -1,9 +1,8 @@
+//go:generate fyne bundle -o bundled.go Calendar.png
+
 package gui
 
 import (
-	"bufio"
-	"io/ioutil"
-	"os"
 	"time"
 
 	"fyne.io/fyne/v2"
@@ -38,16 +37,15 @@ func calendar() *fyne.Container {
 }
 
 func CalendarBtn(date binding.String, win fyne.Window) *fyne.Container {
-	icon := calenIcon()
+	// icon := calenIcon()
 	c := container.NewVBox(
-		widget.NewButtonWithIcon("    Calendar    ", icon, func() {
+		widget.NewButtonWithIcon("    Calendar    ", resourceCalendarPng, func() {
 			dialog.NewCustomConfirm(
 				"Choose a date",
 				"OK",
 				"Cancel",
 				calendar(), func(b bool) {
 					dateToEntry, _ := time.Parse(showDateFormat, d.dateChosen.Text)
-					//(*date).Set(dateToEntry.Format("02.01.2006"))
 					date.Set(dateToEntry.Format("02.01.2006"))
 				},
 				win,
@@ -55,17 +53,4 @@ func CalendarBtn(date binding.String, win fyne.Window) *fyne.Container {
 		}),
 	)
 	return c
-}
-
-func calenIcon() *fyne.StaticResource {
-	calendFile, err := os.Open("calendar.png")
-	if err != nil {
-		panic(err)
-	}
-	r := bufio.NewReader(calendFile)
-	CalendByte, err := ioutil.ReadAll(r)
-	if err != nil {
-		panic(err)
-	}
-	return fyne.NewStaticResource("icon", CalendByte)
 }

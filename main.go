@@ -1,3 +1,5 @@
+//go:generate fyne bundle -o bundled.go Icon.png
+
 package main
 
 import (
@@ -11,61 +13,12 @@ var CalendByte []byte
 var DataBase db.Database
 
 func main() {
-	//DataBase.Name = "main"
-	//DataBase.OpenAndCreateLocalDb()
-
-	//err := DataBase.OpenDataBase(DataBase.Name)
-	//if err != nil {
-	//	DataBase.CreateDataBase("tutelka")
-	//}
-
-	//a := app.New()
-	//c:=a.NewWindow("Accunter")
-
-	// app.SetIcon(resourceIconPng)
-	//w := a.NewWindow("Accounter Manager")
-	//w.Resize(fyne.NewSize(900, 850))
-
-	/*
-		ContWithTable := container.NewWithoutLayout()
-
-		//	dbCreate := fyne.NewMenuItem("New", func() {})
-		//	dbOpen := fyne.NewMenuItem("Open", func() {})
-		//	dbClose := fyne.NewMenuItem("Close", func() {})
-		//	menuDb := fyne.NewMenu("Data base", dbCreate, dbOpen, dbClose)
-		//main_menu := fyne.NewMainMenu(menuDb)
-
-		addDbBtn := widget.NewButtonWithIcon("New data base", theme.ContentAddIcon(), func() {})
-		addDbBtn.Alignment = widget.ButtonAlignCenter
-		openDbBtn := widget.NewButtonWithIcon("Open data base", theme.FolderOpenIcon(), func() {})
-		str := "data base name"
-		strb := binding.BindString(&str)
-		currentDb := widget.NewLabelWithData(strb)
-		top := container.NewHBox(addDbBtn, openDbBtn, currentDb)
-		clear := widget.NewButton("Clear", func() {
-			ContWithTable.RemoveAll()
-		})
-
-		w.SetContent(
-			container.NewBorder(
-				top, clear, nil, nil,
-				container.NewVBox(
-					container.NewVBox(
-						gui.AddOperation(&DataBase, w),
-						gui.PeriodDates(ContWithTable, &DataBase, w),
-					),
-					ContWithTable,
-				)),
-		)
-		//	w.SetMainMenu(main_menu)
-	*/
-
 	app := app.New()
-	//app.SetIcon(resourceIconPng)
+
+	// app.SetIcon(resourceIconPng) // uncomment for packing .exe
 
 	c := gui.NewApp()
 	c.LoadUI(app)
-	app.Run()
 
-	//w.ShowAndRun()
+	app.Run()
 }

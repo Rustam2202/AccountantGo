@@ -27,6 +27,7 @@ const (
 	sqlDateFormat = "2006-01-02"
 )
 
+// Using SQLite
 func (db *Database) OpenAndCreateLocalDb() error {
 	var err error
 	db.dataBase, err = sql.Open("sqlite3", fmt.Sprintf("./%s.db", db.Name))
@@ -48,6 +49,7 @@ func (db *Database) OpenAndCreateLocalDb() error {
 	return nil
 }
 
+// Using MySQL
 func (db *Database) CreateDataBase(name string) error {
 
 	var err error
@@ -98,9 +100,7 @@ func (db *Database) OpenDataBase(name string) error {
 
 func (db *Database) AddIncomeAndSpend(income float32, spend float32, date time.Time,
 	commentIncome string, commentSpend string) error {
-	//if err := db.OpenDataBase(db.Name); err != nil {
-	//	return err
-	//}
+
 	combineCommet := commentIncome + "\n" + commentSpend
 	query := fmt.Sprintf(`INSERT INTO %s (income, spend, date, comment) VALUES (%f, %f, '%s', '%s')`,
 		TableName, income, spend, date.Format(sqlDateFormat), combineCommet)
@@ -158,7 +158,7 @@ func (db *Database) DropTable() error {
 	return nil
 }
 
-func (db *Database) CalculateRecords(dateFrom, dateTo *time.Time) (CalculateResult, error) {
+func (db *Database) CalculateRecords(dateFrom, dateTo time.Time) (CalculateResult, error) {
 	//	if err := db.OpenDataBase(db.Name); err != nil {
 	//		return nil, err
 	//	}
