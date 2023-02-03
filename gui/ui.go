@@ -38,8 +38,6 @@ type accounter struct {
 	dateIncomeBind, dateSpendBind, dateFromBind, dateToBind binding.String
 	// container
 	totalResults *fyne.Container
-	// widgets
-//	monthOfMonthlyReportEntry *fyne.Widget
 }
 
 func (acc *accounter) makeLabel(text string, al allign) *widget.Label {

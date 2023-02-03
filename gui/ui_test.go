@@ -1,16 +1,19 @@
 package gui
 
 import (
-	//gui "accounter/gui"
 	"testing"
 
+	// "fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/test"
-	"github.com/stretchr/testify/assert"
+	// "github.com/stretchr/testify/assert"
 )
 
 func TestAdd(t *testing.T) {
-	acc:=NewApp()
+	//var newError = dialog.NewError()
+
+	acc := NewApp()
 	acc.LoadUI(test.NewApp())
-	test.Type(acc.IncomeEntry, "0.01")
+	test.Type(acc.IncomeEntry, "")
 	test.Tap(acc.AddBtn)
+	t.Errorf("",)
 }
