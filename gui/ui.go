@@ -20,7 +20,9 @@ type accounter struct {
 	dataBase *db.Database
 	win      fyne.Window
 	// canvas text
-	periodLabel, period, allIncomes, allSpends, total *canvas.Text
+	periodLabel, period *canvas.Text
+	// float32
+	allIncomes, allSpends, total float32
 	// entries
 	incomeEntry, spendEntry, dateIncomEntry, dateSpendEntry, commentIncomEntry, commentSpendEntry,
 	dateFromEntry, dateToEntry *widget.Entry
@@ -72,7 +74,7 @@ func (acc accounter) LoadUI(app fyne.App) {
 			container.NewVBox(
 				acc.makeAddBlock(),
 				acc.makeReportBlock(),
-				acc.showResults(),
+				acc.makeTotal(),
 				acc.MakeTable(),
 			),
 		),
@@ -84,13 +86,11 @@ func (acc accounter) LoadUI(app fyne.App) {
 func NewApp() *accounter {
 
 	return &accounter{
-		dataBase:                  &db.Database{},
-		win:                       nil,
-		periodLabel:               &canvas.Text{},
-		period:                    &canvas.Text{},
-		allIncomes:                &canvas.Text{},
-		allSpends:                 &canvas.Text{},
-		total:                     &canvas.Text{},
+		dataBase:    &db.Database{},
+		win:         nil,
+		periodLabel: &canvas.Text{},
+		period:      &canvas.Text{},
+
 		incomeEntry:               widget.NewEntry(),
 		spendEntry:                widget.NewEntry(),
 		dateIncomEntry:            &widget.Entry{},

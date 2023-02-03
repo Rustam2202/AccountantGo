@@ -2,9 +2,11 @@ package gui
 
 import (
 	"fmt"
+	"image/color"
 	"time"
 
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 )
@@ -20,14 +22,28 @@ const (
 	width      = 150
 	height     = 35
 	tableWidth = 850
+	textHeight = 15
 	lauout     = "02.01.2006"
 )
 
-func (acc *accounter) showResults() *fyne.Container {
+var Lime = color.NRGBA{0, 255, 0, 255}
+var DarkRed = color.NRGBA{139, 0, 0, 255}
+
+func (acc *accounter) makeCanvasText(value float32, color color.Color) *canvas.Text {
+	text := canvas.NewText(fmt.Sprintf("%0.2f", value), color)
+	text.Alignment = fyne.TextAlignCenter
+	text.TextSize = textHeight
+	return text
+}
+
+func (acc *accounter) makeTotal() *fyne.Container {
 	//acc.totalResults.Add(
 	return container.NewGridWithColumns(8,
-		acc.periodLabel, acc.period, widget.NewLabel("All incomes"), acc.allIncomes,
-		widget.NewLabel("All spends"), acc.allSpends, widget.NewLabel("Total"), acc.total,
+		acc.periodLabel, acc.period, widget.NewLabel("All incomes"),
+		acc.makeCanvasText(acc.allIncomes, Lime),
+		widget.NewLabel("All spends"),
+		acc.makeCanvasText(acc.allSpends, DarkRed),
+		widget.NewLabel("Total"), acc.makeCanvasText(acc.total, Lime),
 	)
 	//)
 }
@@ -83,9 +99,13 @@ func (acc *accounter) MakeTable( /*dateFrom time.Time, dateTo time.Time, dataBas
 		}
 	}
 
-	acc.allIncomes.Text = fmt.Sprintf("%0.2f", data.AllIncomes)
-	acc.allSpends.Text = fmt.Sprintf("%0.2f", data.AllSpends)
-	acc.total.Text = fmt.Sprintf("%0.2f", data.AllIncomes-data.AllSpends)
+	acc.allIncomes = data.AllIncomes
+	acc.allSpends = data.AllSpends
+	acc.total = data.AllIncomes - data.AllSpends
+
+	//acc.allIncomes.Text = fmt.Sprintf("%0.2f", data.AllIncomes)
+	//acc.allSpends.Text = fmt.Sprintf("%0.2f", data.AllSpends)
+	//acc.total.Text = fmt.Sprintf("%0.2f", data.AllIncomes-data.AllSpends)
 	//	result.Table = tableWithHead
 	//	result.AllIncomes = data.AllIncomes
 	//	result.AllSpends = data.AllSpends

@@ -54,15 +54,15 @@ func (acc *accounter) showAll() {
 	acc.dateToEntry.Text = "02.02.2023"   //time.Now()
 
 	table := acc.MakeTable()
-//	if err != nil {
-//		dialog.ShowError(err, acc.win)
-		return
-//	}
+	//	if err != nil {
+	//		dialog.ShowError(err, acc.win)
+	return
+	//	}
 	//	table.Hide()
 	acc.totalResults.RemoveAll()
 	acc.periodLabel.Text = "All period"
 	// acc.periodLabel.SetText("All period")
-	acc.showResults()
+	acc.makeTotal()
 	acc.totalResults.Add(table)
 	acc.totalResults.Show()
 }
