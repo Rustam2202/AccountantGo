@@ -101,7 +101,12 @@ func (db *Database) OpenDataBase(name string) error {
 func (db *Database) AddIncomeAndSpend(income float32, spend float32, date time.Time,
 	commentIncome string, commentSpend string) error {
 
-	combineCommet := commentIncome + "\n" + commentSpend
+	combineCommet := commentIncome
+	if commentIncome != "" && commentSpend != "" {
+		combineCommet += "\n"
+	}
+	combineCommet += commentSpend
+
 	query := fmt.Sprintf(`INSERT INTO %s (income, spend, date, comment) VALUES (%f, %f, '%s', '%s')`,
 		TableName, income, spend, date.Format(sqlDateFormat), combineCommet)
 
@@ -142,6 +147,17 @@ func (db *Database) AddSpend(spend float32, date time.Time, comment string) erro
 		return err
 	}
 	//defer db.dataBase.Close()
+	statement.Exec()
+	return nil
+}
+
+func (db *Database) DeleteId(id int) error {
+	query := fmt.Sprintf(`DELETE FROM %s WHERE id = %d`,
+		TableName, id)
+	statement, err := db.dataBase.Prepare(query)
+	if err != nil {
+		return err
+	}
 	statement.Exec()
 	return nil
 }

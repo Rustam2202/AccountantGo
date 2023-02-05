@@ -1,3 +1,6 @@
+//go:generate fyne bundle -o bundled.go Calendar.png
+//go:generate fyne bundle -o bundled.go -append day-night.png
+
 package gui
 
 import (
@@ -7,6 +10,7 @@ import (
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -21,6 +25,7 @@ const (
 type accounter struct {
 	dataBase *db.Database
 	win      fyne.Window
+
 	// canvas text
 	periodLabel, period *canvas.Text
 	// float32
@@ -71,17 +76,26 @@ func (acc *accounter) MakeButton(btn *widget.Button, label string, f func()) *wi
 	return btn
 }
 
+func makeThemeSettings(a fyne.App) *fyne.Container {
+	light := widget.NewButtonWithIcon("", resourceLightPng, func() {
+		a.Settings().SetTheme(theme.LightTheme())
+	})
+	dark := widget.NewButtonWithIcon("", resourceDarkPng, func() {
+		a.Settings().SetTheme(theme.DarkTheme())
+	})
+	return container.NewVBox(light, dark)
+}
+
 func (acc accounter) LoadUI(app fyne.App) {
+	app.Settings().SetTheme(theme.LightTheme())
 	acc.dataBase.Name = "main"
 	acc.dataBase.OpenAndCreateLocalDb()
 	acc.win = app.NewWindow("Accounter")
-
 	clearBtn := widget.NewButton("Clear", func() {
 		acc.totalResults.RemoveAll()
 	})
-
 	acc.win.SetContent(
-		container.NewBorder(nil, clearBtn, nil, nil,
+		container.NewBorder(nil, clearBtn, nil, makeThemeSettings(app),
 			container.NewVBox(
 				container.NewVBox(
 					acc.makeAddBlock(),
@@ -96,7 +110,6 @@ func (acc accounter) LoadUI(app fyne.App) {
 }
 
 func NewApp() *accounter {
-
 	return &accounter{
 		dataBase:                  &db.Database{},
 		win:                       nil,

@@ -1,4 +1,4 @@
-//go:generate fyne bundle -o bundled.go Calendar.png
+
 
 package gui
 
@@ -37,7 +37,6 @@ func calendar() *fyne.Container {
 }
 
 func CalendarBtn(date binding.String, win fyne.Window) *fyne.Container {
-	// icon := calenIcon()
 	c := container.NewVBox(
 		widget.NewButtonWithIcon("    Calendar    ", resourceCalendarPng, func() {
 			dialog.NewCustomConfirm(

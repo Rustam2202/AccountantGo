@@ -3,11 +3,13 @@ package gui
 import (
 	"fmt"
 	"image/color"
+	"strconv"
 	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -39,6 +41,25 @@ func (acc *accounter) makeCanvasText(value float32, color color.Color, al allign
 	return text
 }
 
+func (acc *accounter) makeDeleteId() *fyne.Container {
+	entry := widget.NewEntry()
+	space := widget.NewLabel("")
+	entry.PlaceHolder = "No."
+	btn := widget.NewButton("Delete", func() {
+		id, err := strconv.Atoi(entry.Text)
+		if entry.Text == "" {
+			dialog.ShowError(fmt.Errorf(" Enter No. of row to delete"), acc.win)
+			return
+		}
+		if err != nil {
+			dialog.ShowError(fmt.Errorf(" No. format error"), acc.win)
+			return
+		}
+		acc.dataBase.DeleteId(id)
+	})
+	return container.NewGridWithRows(1, space, entry, btn)
+}
+
 func (acc *accounter) makeTotal() *fyne.Container {
 	var totatColor color.Color
 	if acc.total >= 0 {
@@ -51,6 +72,7 @@ func (acc *accounter) makeTotal() *fyne.Container {
 		acc.makeLabel("All incomes:", allign(trail)), acc.makeCanvasText(acc.allIncomes, Lime, allign(lead)),
 		acc.makeLabel("All spends:", allign(trail)), acc.makeCanvasText(acc.allSpends, DarkRed, allign(lead)),
 		acc.makeLabel("Total:", allign(trail)), acc.makeCanvasText(acc.total, totatColor, allign(lead)),
+		acc.makeDeleteId(),
 	)
 }
 
@@ -63,8 +85,6 @@ func (acc *accounter) MakeTable(dateFrom, dateTo time.Time) *fyne.Container {
 			return nil
 		}
 	*/
-
-	
 
 	data, _ := acc.dataBase.CalculateRecords(dateFrom, dateTo)
 
@@ -105,7 +125,7 @@ func (acc *accounter) MakeTable(dateFrom, dateTo time.Time) *fyne.Container {
 	table.SetColumnWidth(4, width)
 	for i := 0; i < len(data.Data); i++ {
 		if data.Data[i][2] != "" && data.Data[i][3] != "" && data.Data[i][4] != "" {
-			table.SetRowHeight(i, height*2)
+			table.SetRowHeight(i, height*1.5)
 		}
 	}
 
@@ -130,7 +150,7 @@ func tableHeader() *widget.Table {
 			label := co.(*widget.Label)
 			switch tci.Col {
 			case 0:
-				label.SetText("No")
+				label.SetText("No.")
 			case 1:
 				label.SetText("Date")
 			case 2:
