@@ -64,6 +64,8 @@ func (acc *accounter) MakeTable(dateFrom, dateTo time.Time) *fyne.Container {
 		}
 	*/
 
+	
+
 	data, _ := acc.dataBase.CalculateRecords(dateFrom, dateTo)
 
 	tableWithHead := container.NewWithoutLayout()

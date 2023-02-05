@@ -58,6 +58,7 @@ func (acc *accounter) showAll() {
 	acc.period.Text = "All period"
 	acc.totalResults.Add(acc.makeTotal())
 	acc.totalResults.Add(table)
+
 	acc.totalResults.Show()
 }
 

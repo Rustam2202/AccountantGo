@@ -75,14 +75,20 @@ func (acc accounter) LoadUI(app fyne.App) {
 	acc.dataBase.Name = "main"
 	acc.dataBase.OpenAndCreateLocalDb()
 	acc.win = app.NewWindow("Accounter")
-	//acc.totalResults.Hide()
+
+	clearBtn := widget.NewButton("Clear", func() {
+		acc.totalResults.RemoveAll()
+	})
+
 	acc.win.SetContent(
-		container.NewVBox(
+		container.NewBorder(nil, clearBtn, nil, nil,
 			container.NewVBox(
-				acc.makeAddBlock(),
-				acc.makeReportBlock(),
+				container.NewVBox(
+					acc.makeAddBlock(),
+					acc.makeReportBlock(),
+				),
+				acc.totalResults,
 			),
-			acc.totalResults,
 		),
 	)
 	acc.win.Resize(fyne.NewSize(900, 850))
@@ -92,11 +98,10 @@ func (acc accounter) LoadUI(app fyne.App) {
 func NewApp() *accounter {
 
 	return &accounter{
-		dataBase:    &db.Database{},
-		win:         nil,
-		periodLabel: &canvas.Text{},
-		period:      &canvas.Text{},
-
+		dataBase:                  &db.Database{},
+		win:                       nil,
+		periodLabel:               &canvas.Text{},
+		period:                    &canvas.Text{},
 		IncomeEntry:               widget.NewEntry(),
 		spendEntry:                widget.NewEntry(),
 		dateIncomEntry:            &widget.Entry{},
