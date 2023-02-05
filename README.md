@@ -11,7 +11,6 @@
         <a>
             This application will serve to accounting your money income and exprnses, store records in the database and
             display a report for different time periodes.
-
         </a>
     </div>
     <h4>How to use</h4>
@@ -46,7 +45,7 @@
         <code>go install fyne.io/fyne/v2/cmd/fyne@latest</code> <br>
         And build .exe file by<br>
         <code>fyne package -os windows</code> or <code>fyne install</code><br>
-        To debug in IDE should to comment `app.SetIcon...` row in main.go
+        To debug in IDE should to comment <code>app.SetIcon...</code> row in main.go
     </a>
     <div>
         <h4>
