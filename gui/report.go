@@ -111,12 +111,12 @@ func (acc *accounter) showPeriod() {
 		dialog.ShowError(errors.New(" Need enter period"), acc.win)
 		return
 	}
-	dateFrom, err1 := utils.CheckDate(acc.dateFromEntry.Text)
+	dateFrom, err1 := utils.CheckDateFormat(acc.dateFromEntry.Text)
 	if err1 != nil {
 		dialog.ShowError(err1, acc.win)
 		return
 	}
-	dateTo, err2 := utils.CheckDate(acc.dateToEntry.Text)
+	dateTo, err2 := utils.CheckDateFormat(acc.dateToEntry.Text)
 	if err2 != nil {
 		dialog.ShowError(err2, acc.win)
 		return

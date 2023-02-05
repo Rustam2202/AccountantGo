@@ -102,7 +102,7 @@ func (acc *accounter) MakeTable(dateFrom, dateTo time.Time) *fyne.Container {
 	table.SetColumnWidth(3, width)
 	table.SetColumnWidth(4, width)
 	for i := 0; i < len(data.Data); i++ {
-		if data.Data[i][2] != "" && data.Data[i][3] != "" {
+		if data.Data[i][2] != "" && data.Data[i][3] != "" && data.Data[i][4] != "" {
 			table.SetRowHeight(i, height*2)
 		}
 	}
