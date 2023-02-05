@@ -15,7 +15,8 @@ var DataBase db.Database
 func main() {
 	app := app.New()
 
-	// app.SetIcon(resourceIconPng) // uncomment for packing .exe
+	// uncomment for packing .exe
+	 app.SetIcon(resourceIconPng) 
 
 	c := gui.NewApp()
 	c.LoadUI(app)

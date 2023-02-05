@@ -63,7 +63,7 @@ func (acc *accounter) makeDeleteId() *fyne.Container {
 func (acc *accounter) makeTotal() *fyne.Container {
 	var totatColor color.Color
 	if acc.total >= 0 {
-		totatColor = Lime
+		totatColor = LimeGreen
 	} else {
 		totatColor = LightCoral
 	}
@@ -77,15 +77,6 @@ func (acc *accounter) makeTotal() *fyne.Container {
 }
 
 func (acc *accounter) MakeTable(dateFrom, dateTo time.Time) *fyne.Container {
-	/*
-		dateFrom, err1 := time.Parse(lauout, acc.dateFromEntry.Text)
-		dateTo, err2 := time.Parse(lauout, acc.dateToEntry.Text)
-		data, err3 := acc.dataBase.CalculateRecords(dateFrom, dateTo)
-		if err1 != nil || err2 != nil || err3 != nil {
-			return nil
-		}
-	*/
-
 	data, _ := acc.dataBase.CalculateRecords(dateFrom, dateTo)
 
 	tableWithHead := container.NewWithoutLayout()
@@ -103,14 +94,19 @@ func (acc *accounter) MakeTable(dateFrom, dateTo time.Time) *fyne.Container {
 			label := o.(*widget.Label)
 			switch i.Col {
 			case 0:
+				label.Alignment = fyne.TextAlignCenter
 				label.SetText(data.Data[i.Row][0])
 			case 1:
+				label.Alignment = fyne.TextAlignCenter
 				label.SetText(data.Data[i.Row][1])
 			case 2:
+				label.Alignment = fyne.TextAlignCenter
 				label.SetText(data.Data[i.Row][2])
 			case 3:
+				label.Alignment = fyne.TextAlignCenter
 				label.SetText(data.Data[i.Row][3])
 			case 4:
+				label.Alignment = fyne.TextAlignLeading
 				label.SetText(data.Data[i.Row][4])
 			default:
 			}

@@ -72,8 +72,12 @@ func (acc *accounter) clearAddEntries() {
 	acc.dateIncomEntry.Text = ""
 	acc.spendEntry.Text = ""
 	acc.dateSpendEntry.Text = ""
+	acc.commentIncomEntry.Text = ""
+	acc.commentSpendEntry.Text = ""
 	acc.IncomeEntry.Refresh()
 	acc.dateIncomEntry.Refresh()
 	acc.spendEntry.Refresh()
 	acc.dateSpendEntry.Refresh()
+	acc.commentIncomEntry.Refresh()
+	acc.commentSpendEntry.Refresh()
 }
