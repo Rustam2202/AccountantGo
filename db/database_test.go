@@ -1,7 +1,7 @@
 package db
 
 import (
-	"accounter/utils"
+	"accountant/utils"
 	"math"
 	"math/rand"
 	"strconv"
@@ -46,7 +46,7 @@ func Test1(t *testing.T) {
 	DataBase.Name = "test1"
 	DataBase.OpenAndCreateLocalDb()
 	DataBase.AddSpend(test1Inputs[0].sum, test1Inputs[0].date, "text")
-	DataBase.AddIncome(test1Inputs[1].sum, test1Inputs[1].date, "loooooooooooooooooong text")
+	DataBase.AddIncome(test1Inputs[1].sum, test1Inputs[1].date, "")
 	DataBase.AddIncome(test1Inputs[2].sum, test1Inputs[2].date, "")
 	DataBase.AddIncome(test1Inputs[3].sum, test1Inputs[3].date, "")
 	DataBase.AddSpend(test1Inputs[4].sum, test1Inputs[4].date, "")

@@ -1,7 +1,7 @@
 package gui
 
 import (
-	"accounter/utils"
+	"accountant/utils"
 	"errors"
 	"fmt"
 	"strconv"

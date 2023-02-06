@@ -3,8 +3,8 @@
 package main
 
 import (
-	db "accounter/db"
-	"accounter/gui"
+	db "accountant/db"
+	"accountant/gui"
 
 	"fyne.io/fyne/v2/app"
 )
