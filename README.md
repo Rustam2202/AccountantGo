@@ -8,11 +8,12 @@
             <h4>What is it</h4>
             <a>
                 This application will serve to accounting your money income and
-                exprnses, store records in the database and
+                expenses, store records in the database and
                 display a report for different time periodes.
             </a>
         </div>
         <div>
+            <br>
             <img src="screen.png">
         </div>
         <h4>How to use</h4>
