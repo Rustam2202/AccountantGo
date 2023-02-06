@@ -120,10 +120,6 @@ func (db *Database) AddIncomeAndSpend(income float32, spend float32, date time.T
 }
 
 func (db *Database) AddIncome(income float32, date time.Time, comment string) error {
-	//if err := db.OpenDataBase(db.Name); err != nil {
-	//	return err
-	//}
-
 	query := fmt.Sprintf(`INSERT INTO %s (income, date, comment) VALUES (%f, '%s', '%s')`,
 		TableName, income, date.Format(sqlDateFormat), comment)
 	statement, err := db.dataBase.Prepare(query)
@@ -136,10 +132,6 @@ func (db *Database) AddIncome(income float32, date time.Time, comment string) er
 }
 
 func (db *Database) AddSpend(spend float32, date time.Time, comment string) error {
-	//if err := db.OpenDataBase(db.Name); err != nil {
-	//	return err
-	//}
-
 	query := fmt.Sprintf(`INSERT INTO %s (spend, date, comment) VALUES (%f, '%s', '%s')`,
 		TableName, spend, date.Format(sqlDateFormat), comment)
 	statement, err := db.dataBase.Prepare(query)
@@ -175,9 +167,6 @@ func (db *Database) DropTable() error {
 }
 
 func (db *Database) CalculateRecords(dateFrom, dateTo time.Time) (CalculateResult, error) {
-	//	if err := db.OpenDataBase(db.Name); err != nil {
-	//		return nil, err
-	//	}
 	query := fmt.Sprintf(`SELECT * FROM %s WHERE date >= '%s' AND date <= '%s' ORDER BY date DESC`,
 		TableName, dateFrom.Format(sqlDateFormat), dateTo.Format(sqlDateFormat),
 	)

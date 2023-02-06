@@ -1,5 +1,3 @@
-
-
 package gui
 
 import (
@@ -37,19 +35,21 @@ func calendar() *fyne.Container {
 }
 
 func CalendarBtn(date binding.String, win fyne.Window) *fyne.Container {
-	c := container.NewVBox(
-		widget.NewButtonWithIcon("    Calendar    ", resourceCalendarPng, func() {
+	return container.NewVBox(
+		widget.NewButtonWithIcon("", resourceCalendarPng, func() {
 			dialog.NewCustomConfirm(
 				"Choose a date",
 				"OK",
 				"Cancel",
-				calendar(), func(b bool) {
-					dateToEntry, _ := time.Parse(showDateFormat, d.dateChosen.Text)
-					date.Set(dateToEntry.Format("02.01.2006"))
+				calendar(),
+				func(b bool) {
+					if b {
+						dateToEntry, _ := time.Parse(showDateFormat, d.dateChosen.Text)
+						date.Set(dateToEntry.Format("02.01.2006"))
+					}
 				},
 				win,
 			).Show()
 		}),
 	)
-	return c
 }

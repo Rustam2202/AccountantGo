@@ -12,18 +12,23 @@ import (
 )
 
 func (acc *accounter) makeAddBlock() *fyne.Container {
+	today := time.Now().Format("02.01.2006")
 	return container.NewVBox(
 		acc.makeLabel("Enter income and/or spend to add in database", 1), // header
 		container.NewHBox(
-			container.NewGridWithColumns(4,
-				acc.makeEntry(acc.IncomeEntry, "Enter Income:"),
-				acc.makeEntryWithData(acc.dateIncomeBind, acc.dateIncomEntry),
+			container.NewGridWithColumns(2,
+				acc.makeEntry(acc.IncomeEntry, "Enter Income"),
+				acc.makeEntryWithData(acc.dateIncomeBind, acc.dateIncomEntry, today),
+				acc.makeEntry(acc.spendEntry, "Enter Spend"),
+				acc.makeEntryWithData(acc.dateSpendBind, acc.dateSpendEntry, today),
+			),
+			container.NewGridWithColumns(1,
 				CalendarBtn(acc.dateIncomeBind, acc.win),
-				acc.makeEntry(acc.commentIncomEntry, "Enter comment"),
-				acc.makeEntry(acc.spendEntry, "Enter Spend:"),
-				acc.makeEntryWithData(acc.dateSpendBind, acc.dateSpendEntry),
 				CalendarBtn(acc.dateSpendBind, acc.win),
-				acc.makeEntry(acc.commentSpendEntry, "Enter comment"),
+			),
+			container.NewGridWithColumns(1,
+				acc.makeEntry(acc.commentIncomEntry, "Enter comment\t\t\t\t"), // '\t' make more width for entry
+				acc.makeEntry(acc.commentSpendEntry, "Enter comment\t\t\t\t"),
 			),
 			acc.MakeButton(acc.AddBtn, "Add", acc.AddBtnEvent),
 		),

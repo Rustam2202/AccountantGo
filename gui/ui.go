@@ -17,9 +17,9 @@ import (
 type allign fyne.TextAlign
 
 const (
-	lead allign = 0
-	center
-	trail
+	lead   allign = 0
+	center        = 1
+	trail         = 2
 )
 
 type accounter struct {
@@ -66,8 +66,9 @@ func (acc *accounter) makeEntry(ent *widget.Entry, placeholder string) *widget.E
 	return ent
 }
 
-func (acc *accounter) makeEntryWithData(bind binding.String, ent *widget.Entry) *widget.Entry {
+func (acc *accounter) makeEntryWithData(bind binding.String, ent *widget.Entry, placeholder string) *widget.Entry {
 	ent.Bind(bind)
+	ent.SetPlaceHolder(placeholder)
 	return ent
 }
 
@@ -83,7 +84,7 @@ func makeThemeSettings(a fyne.App) *fyne.Container {
 	dark := widget.NewButtonWithIcon("", resourceDarkPng, func() {
 		a.Settings().SetTheme(theme.DarkTheme())
 	})
-	return container.NewVBox(light, dark)
+	return container.NewVBox(light, dark, instructionBtn())
 }
 
 func (acc accounter) LoadUI(app fyne.App) {

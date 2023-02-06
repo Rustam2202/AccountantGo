@@ -50,7 +50,7 @@
             To get .exe file for Windows you need:<br>
             install Fyne builder<br>
             <code>go install fyne.io/fyne/v2/cmd/fyne@latest</code> <br>
-            And build .exe file by<br>
+            and build .exe file by<br>
             <code>fyne package -os windows</code> or <code>fyne install</code><br>
             To debug in IDE should to comment <code>app.SetIcon...</code> row in
             main.go

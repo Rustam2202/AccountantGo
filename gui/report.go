@@ -20,17 +20,25 @@ func (acc *accounter) makeReportBlock() *fyne.Container {
 	acc.monthOfMonthlyReportEntry = widget.NewSelect(months, func(s string) {})
 	acc.yearOfMonthlyReportEntry = widget.NewSelectEntry(years())
 	acc.yearOfAnnualReportEntry = widget.NewSelectEntry(years())
+	today := time.Now().Format("02.01.2006")
 	return container.NewVBox(
 		acc.makeLabel("Enter period to show report", 1), // header
 		container.NewHBox(
-			container.NewGridWithColumns(4,
-				acc.makeLabel("Period begin:", allign(trail)),
-				acc.makeEntryWithData(acc.dateFromBind, acc.dateFromEntry),
-				CalendarBtn(acc.dateFromBind, acc.win),
-				acc.makeLabel("Month and year:", allign(trail)),
+			container.NewGridWithColumns(2,
+				acc.makeLabel("Period begin:", 2),
+				acc.makeEntryWithData(acc.dateFromBind, acc.dateFromEntry, today),
 				acc.makeLabel("Period end:", allign(trail)),
-				acc.makeEntryWithData(acc.dateToBind, acc.dateToEntry),
+				acc.makeEntryWithData(acc.dateToBind, acc.dateToEntry, today),
+			),
+			container.NewGridWithColumns(1,
+				CalendarBtn(acc.dateFromBind, acc.win),
 				CalendarBtn(acc.dateToBind, acc.win),
+			),
+			container.NewGridWithColumns(1,
+				widget.NewLabel("\t"),
+			),
+			container.NewGridWithColumns(1,
+				acc.makeLabel("Month and year:", allign(trail)),
 				acc.makeLabel("Year:", allign(trail)),
 			),
 			container.NewGridWithRows(2,
@@ -49,8 +57,6 @@ func (acc *accounter) makeReportBlock() *fyne.Container {
 }
 
 func (acc *accounter) showAll() {
-	//acc.dateFromEntry.Text = "01.01.2019" // time.Date(2020, 1, 1, 0, 0, 0, 0, &time.Location{})
-	//acc.dateToEntry.Text = "02.02.2023"   // time.Now()
 	dateFrom := time.Date(2000, 1, 1, 0, 0, 0, 0, &time.Location{})
 	dateTo := time.Now()
 	acc.totalResults.RemoveAll()
