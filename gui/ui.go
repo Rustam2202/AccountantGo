@@ -88,7 +88,7 @@ func makeThemeSettings(a fyne.App) *fyne.Container {
 
 func (acc accounter) LoadUI(app fyne.App) {
 	app.Settings().SetTheme(theme.LightTheme())
-	acc.dataBase.Name = "main"
+	acc.dataBase.Name = "database"
 	acc.dataBase.OpenAndCreateLocalDb()
 	acc.win = app.NewWindow("Accounter")
 	clearBtn := widget.NewButton("Clear", func() {
@@ -115,8 +115,8 @@ func NewApp() *accounter {
 		win:                       nil,
 		periodLabel:               &canvas.Text{},
 		period:                    &canvas.Text{},
-		IncomeEntry:               widget.NewEntry(),
-		spendEntry:                widget.NewEntry(),
+		IncomeEntry:               &widget.Entry{},
+		spendEntry:                &widget.Entry{},
 		dateIncomEntry:            &widget.Entry{},
 		dateSpendEntry:            &widget.Entry{},
 		commentIncomEntry:         &widget.Entry{},

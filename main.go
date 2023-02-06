@@ -16,7 +16,7 @@ func main() {
 	app := app.New()
 
 	// uncomment for packing .exe
-	 app.SetIcon(resourceIconPng) 
+	// app.SetIcon(resourceIconPng) 
 
 	c := gui.NewApp()
 	c.LoadUI(app)
