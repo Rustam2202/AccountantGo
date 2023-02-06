@@ -1,10 +1,8 @@
 <html>
-
     <head>
         <h2>Simple accountant</h2>
         Accounting of income and expense data.
     </head>
-
     <body>
         <div>
             <h4>What is it</h4>
@@ -70,5 +68,4 @@
             </a>
         </div>
     </body>
-
 </html>
