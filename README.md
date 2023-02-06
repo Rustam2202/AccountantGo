@@ -13,7 +13,7 @@
             </a>
         </div>
         <div>
-            <img src="app_screen.png">
+            <img src="screen.png">
         </div>
         <h4>How to use</h4>
         <a>
